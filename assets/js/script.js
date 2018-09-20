@@ -1,8 +1,11 @@
-//key for api request
+//keys for api request
 const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
-const localLang = `uk-ua`
+const localLang = `uk-ua`;
+let localLocationKey;
 
-const contentSection = document.querySelector('.content-section');
+const contentSectionElement = document.querySelector('.content-section');
+const burgerContainerElement = document.querySelector('.burger-continer')
+const menuElement = document.querySelector('.menu')
 
 const createCurrentLocalDate = (date) => {
     const localDate = new Date(date);
@@ -16,7 +19,6 @@ const createCurrentLocalDate = (date) => {
 
 const createCurrentWeather = (currentData) => {
     const currentLocalDate = createCurrentLocalDate(currentData.LocalObservationDateTime)
-    
     const createCurrentWeatherMarkup = (currentLocalDate, currentData) =>
         `
         <div class='current-conditions-block'>
@@ -36,16 +38,18 @@ const createCurrentWeather = (currentData) => {
             </div>
         </div>
         `
-        contentSection.innerHTML = createCurrentWeatherMarkup(currentLocalDate, currentData);
+        contentSectionElement.innerHTML = createCurrentWeatherMarkup(currentLocalDate, currentData);
 }
 
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
+    localLocationKey = currentLocation.Key
+    console.log(localLocationKey)
     const currentArea = {
         curentCountry: currentLocation.Country.LocalizedName,
         currentCity: currentLocation.LocalizedName
     }
-    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${currentLocation.Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${localLocationKey}?apikey=${apiKey}&language=${localLang}&details=true`)
         .then(response => response.json())
         .then(data => {
             const currentData = {
@@ -54,6 +58,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
             }
             createCurrentWeather(currentData)
         })
+        
 }
 
 const apiGetCurrentLocationRequest = (userPosition) => {
@@ -76,6 +81,9 @@ window.onload = function () {
         console.log('Error occurred. Error code: ' + error.code)
     }
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions)
-
-
 }
+
+burgerContainerElement.addEventListener('click', event => {
+    event.currentTarget.classList.toggle('change');
+    menuElement.classList.toggle('open')
+})

@@ -66,7 +66,7 @@ window.onload = async function () {
     let userPosition;
     const geoOptions = {
         maximumAge: 5 * 60 * 1000,
-        timeout: 10 * 1000
+        timeout: 5000
     }
     const geoSuccess = (position) => {
         userPosition = position;

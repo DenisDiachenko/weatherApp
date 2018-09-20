@@ -1,0 +1,87 @@
+body {
+    margin: 0;
+    background: #1d1f20;
+    font-family: sans-serif;
+    color: white;
+  }
+  /* Gradient Degrade Animation from https://giphy.com/upload/ */ 
+  .bg-gradient-anim {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+  }
+  .bg-gradient-anim:before,
+  .bg-gradient-anim:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    -webkit-animation: fade-in 7s ease-in-out 0s infinite alternate forwards;
+    -moz-animation: fade-in 7s ease-in-out 0s infinite alternate forwards;
+    -ms-animation: fade-in 7s ease-in-out 0s infinite alternate forwards;
+    animation: fade-in 7s ease-in-out 0s infinite alternate forwards;
+  }
+  .bg-gradient-anim:before {
+    background: #892de5;
+    background: -moz-linear-gradient(135deg, #892de5 0%, #e5da52 100%);
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #892de5), color-stop(100%, #e5da52));
+    background: -webkit-linear-gradient(135deg, #892de5 0%, #e5da52 100%);
+    background: -o-linear-gradient(135deg, #892de5 0%, #e5da52 100%);
+    background: -ms-linear-gradient(135deg, #892de5 0%, #e5da52 100%);
+    background: linear-gradient(135deg, #892de5 0%, #e5da52 100%);
+  }
+  .bg-gradient-anim:after {
+    background: #e5da52;
+    background: -moz-linear-gradient(135deg, #e5da52 0%, #892de5 100%);
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #e5da52), color-stop(100%, #892de5));
+    background: -webkit-linear-gradient(135deg, #e5da52 0%, #892de5 100%);
+    background: -o-linear-gradient(135deg, #e5da52 0%, #892de5 100%);
+    background: -ms-linear-gradient(135deg, #e5da52 0%, #892de5 100%);
+    background: linear-gradient(135deg, #e5da52 0%, #892de5 100%);
+    -webkit-animation-direction: alternate-reverse;
+    -moz-animation-direction: alternate-reverse;
+    -ms-animation-direction: alternate-reverse;
+    animation-direction: alternate-reverse;
+  }
+
+  /*Media queries*/
+
+  /* Animation keyframes rules */
+  @-moz-keyframes fade-in {
+    0% {
+      opacity: 0
+    }
+    100% {
+      opacity: 1
+    }
+  }
+  @-webkit-keyframes fade-in {
+    0% {
+      opacity: 0
+    }
+    100% {
+      opacity: 1
+    }
+  }
+  @-o-keyframes fade-in {
+    0% {
+      opacity: 0
+    }
+    100% {
+      opacity: 1
+    }
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0
+    }
+    100% {
+      opacity: 1
+    }
+  }

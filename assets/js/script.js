@@ -1,7 +1,6 @@
 //keys for api request
 const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
 const localLang = `uk-ua`;
-let localLocationKey;
 
 const contentSectionElement = document.querySelector('.content-section');
 const burgerContainerElement = document.querySelector('.burger-continer')
@@ -43,22 +42,19 @@ const createCurrentWeather = (currentData) => {
 
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
-    localLocationKey = currentLocation.Key
-    console.log(localLocationKey)
     const currentArea = {
         curentCountry: currentLocation.Country.LocalizedName,
         currentCity: currentLocation.LocalizedName
-    }
-    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${localLocationKey}?apikey=${apiKey}&language=${localLang}&details=true`)
+    };
+    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${currentLocation.Key}?apikey=${apiKey}&language=${localLang}&details=true`)
         .then(response => response.json())
         .then(data => {
             const currentData = {
                 ...currentArea,
                 ...data[0]
-            }
-            createCurrentWeather(currentData)
+            };
+            createCurrentWeather(currentData);
         })
-        
 }
 
 const apiGetCurrentLocationRequest = (userPosition) => {
@@ -78,7 +74,7 @@ window.onload = function () {
         apiGetCurrentLocationRequest(userPosition)
     };
     const geoError = (error) => {
-        console.log('Error occurred. Error code: ' + error.code)
+        alarm('Error occurred. Error code: ' + error.code)
     }
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions)
 }

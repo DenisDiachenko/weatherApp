@@ -45,7 +45,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
         curentCountry: currentLocation.Country.LocalizedName,
         currentCity: currentLocation.LocalizedName
     }
-    fetch(`http://dataservice.accuweather.com/currentconditions/v1/${currentLocation.Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${currentLocation.Key}?apikey=${apiKey}&language=${localLang}&details=true`)
         .then(response => response.json())
         .then(data => {
             const currentData = {
@@ -57,7 +57,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
 }
 
 const apiGetCurrentLocationRequest = (userPosition) => {
-    fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${userPosition.coords.latitude}%2C%20${userPosition.coords.longitude}&language=${localLang}`)
+    fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${userPosition.coords.latitude}%2C%20${userPosition.coords.longitude}&language=${localLang}`)
         .then(response => response.json())
         .then(data => apiGetCurrentConditionsRequest(data[0]))
 }

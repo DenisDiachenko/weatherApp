@@ -62,7 +62,7 @@ const apiGetCurrentLocationRequest = (userPosition) => {
         .then(data => apiGetCurrentConditionsRequest(data[0]))
 }
 
-window.onload = async function () {
+// window.onload = async function () {
     let userPosition;
     const geoOptions = {
         maximumAge: 5 * 60 * 1000,
@@ -78,4 +78,4 @@ window.onload = async function () {
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions)
 
 
-}
+// }

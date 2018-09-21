@@ -49,8 +49,11 @@ const createCurrentWeather = (currentData) => {
                 </div>
             </div>
         </div>
-    `    
-    contentSectionElement.innerHTML = createCurrentWeatherMarkup(currentLocalDate, currentData);
+    `
+    const currentConditionsBlock = document.createElement('div');
+    currentConditionsBlock.classList.add('current-conditions-block');
+    currentConditionsBlock.innerHTML = createCurrentWeatherMarkup(currentLocalDate, currentData)
+    contentSectionElement.insertBefore(currentConditionsBlock, contentSectionElement.firstChild);
 }
 
 const createForecasts = (data, time) =>
@@ -63,11 +66,11 @@ const createForecasts = (data, time) =>
             <span class='daily-forecasts-data-condition-text'>${data[time].LongPhrase}</span>
         </div>
         <div class='daily-forecasts-data-description>
-            <div class='daily-forecasts-data-temperature>
+            <div class='daily-forecasts-data-temperature'>
                 ${time === 'Day' ? data.Temperature.Maximum.Value : data.Temperature.Minimum.Value} ${data.Temperature.Maximum.Unit}<sup>o</sup>
             </div>
-            <div class='daily-forecasts-wind-description>
-                <div class='daily-forecasts-wind>
+            <div class='daily-forecasts-wind-description'>
+                <div class='daily-forecasts-wind'>
                     <div>Швидкість вітру: ${data[time].Wind.Speed.Value} ${data[time].Wind.Speed.Unit}</div>
                     <div>Напрямок: ${data[time].Wind.Direction.Localized}</div>
                 </div>
@@ -94,24 +97,23 @@ const createForecasts = (data, time) =>
 const createDailyForecasts = (dailyForecasts) => {
     const createDailyForecastsMarkup = (dailyForecasts) =>
         `
-        <div class='daily-forecasts-block'>
-        <div class='daily-forecasts-title>Сьогодні</div>
             ${createForecasts(dailyForecasts, 'Day')}
             ${createForecasts(dailyForecasts, 'Night')}
-        </div>
         `
     const dailyForecastBlock = document.createElement('div');
+    dailyForecastBlock.classList.add('daily-forecasts-block')
     dailyForecastBlock.innerHTML = createDailyForecastsMarkup(dailyForecasts)
     contentSectionElement.appendChild(dailyForecastBlock);
 }
 
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
+    const { Key } = currentLocation
     const currentArea = {
         curentCountry: currentLocation.Country.LocalizedName,
         currentCity: currentLocation.LocalizedName
     };
-    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${currentLocation.Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
         .then(response => response.json())
         .then(data => {
             const currentData = {
@@ -129,6 +131,13 @@ const apiGetDailyForecastRequest = (currentLocation) => {
         .then(data => createDailyForecasts(data.DailyForecasts[0]))
 }
 
+const apiGetFiveDaysForecstRequest = (currentLocation) => {
+    const { Key } = currentLocation;
+    fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true"`)
+        .then(response => response.json())
+        .then(data => console.log(data))
+}
+
 const apiGetCurrentLocationRequest = (userPosition) => {
     const { latitude, longitude } = userPosition.coords;
     fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${latitude}%2C%20${longitude}&language=${localLang}`)
@@ -136,6 +145,7 @@ const apiGetCurrentLocationRequest = (userPosition) => {
         .then(data => {
             apiGetCurrentConditionsRequest(data[0])
             apiGetDailyForecastRequest(data[0])
+            apiGetFiveDaysForecstRequest(data[0])
         })
 }
 
@@ -151,7 +161,7 @@ window.onload = function () {
         apiGetCurrentLocationRequest(userPosition);
     };
     const geoError = (error) => {
-        console('Error occurred. Error code: ' + error.code)
+        console.log('Error occurred. Error code: ' + error.code)
     }
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions)
 }

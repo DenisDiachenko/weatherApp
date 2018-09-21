@@ -45,4 +45,12 @@ body {
     transform: rotate(45deg) translate(-8px, -8px) ;
 }
 
-  
+.daily-forecasts-data-condition-header {
+  display: flex;
+  align-items: center
+}
+
+.daily-forecasts-block {
+  display: flex;
+  justify-content: space-around;
+}

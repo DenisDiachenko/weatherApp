@@ -95,7 +95,6 @@ const createForecasts = (data, time) =>
 
 
 const createDailyForecasts = (dailyForecasts) => {
-    console.log(dailyForecasts)
     const createDailyForecastsMarkup = (dailyForecasts) =>
         `
             ${createForecasts(dailyForecasts, 'Day')}

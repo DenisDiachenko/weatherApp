@@ -11,8 +11,7 @@ const localLang = `uk-ua`;
 const contentSectionElement = document.querySelector('.content-section');
 const burgerContainerElement = document.querySelector('.burger-continer');
 const switchButtons = document.querySelectorAll('.switch-button');
-const menuElement = document.querySelector('.menu')
-
+const menuElement = document.querySelector('.menu');
 
 const addEventListenerForButtons = (switchButtons) => {
     for (const button of switchButtons) {
@@ -33,10 +32,6 @@ const addEventListenerForButtons = (switchButtons) => {
                 }
                 targetWeatherBlock.style.display = 'flex';
             }
-            else {
-                targetWeatherBlock.style.display = 'none'
-            }
-
         })
     }
 }
@@ -87,8 +82,10 @@ const createCurrentWeather = (currentData) => {
 
 const createDailyForecastsMarkup = (dailyForecasts) =>
         `
-            ${createForecasts(dailyForecasts, 'Day')}
-            ${createForecasts(dailyForecasts, 'Night')}
+            <div class='forecast-wrapper'>
+                ${createForecasts(dailyForecasts, 'Day')}
+                ${createForecasts(dailyForecasts, 'Night')}
+            </div>
         `
 
 const createForecasts = (data, time) =>
@@ -138,6 +135,7 @@ const createDailyForecasts = (dailyForecasts) => {
 }
 
 const createFiveDaysForecast = (dailyForecasts) => {
+    console.log(dailyForecasts)
     const fiveDaysForecastBlock = document.createElement('div');
     fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
     fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('')
@@ -216,6 +214,7 @@ window.onload = function () {
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)
     }
+    switchButtons[0].setAttribute('disabled', true)
     addEventListenerForButtons(switchButtons);
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }

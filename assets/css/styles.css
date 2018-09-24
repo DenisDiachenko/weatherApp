@@ -45,6 +45,12 @@ body {
     transform: rotate(45deg) translate(-8px, -8px) ;
 }
 
+.navbar {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
 .daily-forecasts-data-condition-header {
   display: flex;
   align-items: center
@@ -53,4 +59,12 @@ body {
 .daily-forecasts-block {
   display: flex;
   justify-content: space-around;
+}
+
+.five-days-forecast-block {
+  display: none;
+}
+
+.ten-days-forecast-block {
+  display: none;
 }

@@ -9,10 +9,39 @@ const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 const localLang = `uk-ua`;
 
 const contentSectionElement = document.querySelector('.content-section');
-const burgerContainerElement = document.querySelector('.burger-continer')
+const burgerContainerElement = document.querySelector('.burger-continer');
+const switchButtons = document.querySelectorAll('.switch-button');
 const menuElement = document.querySelector('.menu')
 
-const createCurrentLocalDate = (date) => {
+
+const addEventListenerForButtons = (switchButtons) => {
+    for (const button of switchButtons) {
+        button.addEventListener('click', event => {
+            const targetButton = event.target;
+            const targetClass = event.target.className;
+            const targetBlockClassName = targetClass.slice(0, targetClass.indexOf(' '));
+            const targetWeatherBlock = document.querySelector(`.${targetBlockClassName}-forecast-block`);
+            const weatherBlocks = document.querySelectorAll('.weather-block')
+            if (targetWeatherBlock.style.display === 'none' || targetWeatherBlock.style.display === '') {
+                for (let button of switchButtons) {
+                    button.removeAttribute('disabled')
+                }
+                targetButton.setAttribute('disabled', true)
+
+                for (let block of weatherBlocks) {
+                    block.style.display = 'none';
+                }
+                targetWeatherBlock.style.display = 'flex';
+            }
+            else {
+                targetWeatherBlock.style.display = 'none'
+            }
+
+        })
+    }
+}
+
+const createLocalDate = (date) => {
     const localDate = new Date(date);
     const currentDate = {
         year: localDate.getFullYear(),
@@ -26,7 +55,7 @@ const createCurrentLocalDate = (date) => {
 }
 
 const createCurrentWeather = (currentData) => {
-    const currentLocalDate = createCurrentLocalDate(currentData.LocalObservationDateTime)
+    const currentLocalDate = createLocalDate(currentData.LocalObservationDateTime)
     const createCurrentWeatherMarkup = (currentLocalDate, currentData) =>
     `
         <div class='current-conditions-block'>
@@ -56,9 +85,16 @@ const createCurrentWeather = (currentData) => {
     contentSectionElement.insertBefore(currentConditionsBlock, contentSectionElement.firstChild);
 }
 
+const createDailyForecastsMarkup = (dailyForecasts) =>
+        `
+            ${createForecasts(dailyForecasts, 'Day')}
+            ${createForecasts(dailyForecasts, 'Night')}
+        `
+
 const createForecasts = (data, time) =>
     `
      <div class='daily-forecasts-data'>
+        <div class='daily-forecasts-date'>${time} - ${createLocalDate(data.Date).day}.${createLocalDate(data.Date).month}.${createLocalDate(data.Date).year}</div>
         <div class='daily-forecasts-data-condition-header'>
             <img class='daily-forecasts-data-condition-icon' 
                 src='https://developer.accuweather.com/sites/default/files/${data[time].Icon < 10 ? `0${data[time].Icon}` : data[time].Icon}-s.png'
@@ -95,17 +131,25 @@ const createForecasts = (data, time) =>
 
 
 const createDailyForecasts = (dailyForecasts) => {
-    const createDailyForecastsMarkup = (dailyForecasts) =>
-        `
-            ${createForecasts(dailyForecasts, 'Day')}
-            ${createForecasts(dailyForecasts, 'Night')}
-        `
     const dailyForecastBlock = document.createElement('div');
-    dailyForecastBlock.classList.add('daily-forecasts-block')
-    dailyForecastBlock.innerHTML = createDailyForecastsMarkup(dailyForecasts)
+    dailyForecastBlock.classList.add('daily-forecast-block', 'weather-block')
+    dailyForecastBlock.innerHTML = createDailyForecastsMarkup(dailyForecasts);
     contentSectionElement.appendChild(dailyForecastBlock);
 }
 
+const createFiveDaysForecast = (dailyForecasts) => {
+    const fiveDaysForecastBlock = document.createElement('div');
+    fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
+    fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('')
+    contentSectionElement.appendChild(fiveDaysForecastBlock);
+}
+
+const createTenDaysForecast = (dailyForecasts) => {
+    const tenDaysForecastBlock = document.createElement('div');
+    tenDaysForecastBlock.classList.add('ten-days-forecast-block', 'weather-block');
+    fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
+    contentSectionElement.appendChild(tenDaysForecastBlock);
+}
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
     const { Key } = currentLocation
@@ -126,16 +170,24 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
 
 const apiGetDailyForecastRequest = (currentLocation) => {
     const { Key } = currentLocation;
-    fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/1day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
+    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/1day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
         .then(response => response.json())
         .then(data => createDailyForecasts(data.DailyForecasts[0]))
 }
 
-const apiGetFiveDaysForecstRequest = (currentLocation) => {
+const apiGetFiveDaysForecastRequest = (currentLocation) => {
     const { Key } = currentLocation;
-    fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true"`)
+    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => createFiveDaysForecast(data))
+}
+
+const apiGetTenDaysForecastRequest = (currentLocation) => {
+    const { Key } = currentLocation;
+    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/10day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
+        .then(response => response.json())
+        .then(data => createTenDaysForecast(data))
+
 }
 
 const apiGetCurrentLocationRequest = (userPosition) => {
@@ -145,7 +197,8 @@ const apiGetCurrentLocationRequest = (userPosition) => {
         .then(data => {
             apiGetCurrentConditionsRequest(data[0])
             apiGetDailyForecastRequest(data[0])
-            apiGetFiveDaysForecstRequest(data[0])
+            apiGetFiveDaysForecastRequest(data[0])
+            apiGetTenDaysForecastRequest(data[0])
         })
 }
 
@@ -163,7 +216,8 @@ window.onload = function () {
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)
     }
-    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions)
+    addEventListenerForButtons(switchButtons);
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }
 
 burgerContainerElement.addEventListener('click', event => {

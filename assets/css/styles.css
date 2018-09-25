@@ -56,16 +56,11 @@ body {
   align-items: center
 }
 
-.daily-forecasts-block {
+/* .daily-forecasts-block {
   display: flex;
   justify-content: space-around;
-}
+} */
 
 .five-days-forecast-block {
   display: none;
 }
-
-.ten-days-forecast-block {
-  display: none;
-}
-

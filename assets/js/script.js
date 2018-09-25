@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis.diachenko@outlook.com
-// const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
+ const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
 
 // sarmat4ever@gmail.com
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 const localLang = `uk-ua`;
 
@@ -13,13 +13,16 @@ const burgerContainerElement = document.querySelector('.burger-continer');
 const switchButtons = document.querySelectorAll('.switch-button');
 const menuElement = document.querySelector('.menu');
 
+const prev = document.querySelector('.prev');
+const next = document.querySelector('.next');
+
 const addEventListenerForButtons = (switchButtons) => {
     for (const button of switchButtons) {
         button.addEventListener('click', event => {
             const targetButton = event.target;
             const targetClass = event.target.className;
-            const targetBlockClassName = targetClass.slice(0, targetClass.indexOf(' '));
-            const targetWeatherBlock = document.querySelector(`.${targetBlockClassName}-forecast-block`);
+            const targetBlockClassName = `.${targetClass.slice(0, targetClass.indexOf(' '))}-forecast-block`;
+            const targetWeatherBlock = document.querySelector(targetBlockClassName);
             const weatherBlocks = document.querySelectorAll('.weather-block')
             if (targetWeatherBlock.style.display === 'none' || targetWeatherBlock.style.display === '') {
                 for (let button of switchButtons) {
@@ -35,7 +38,6 @@ const addEventListenerForButtons = (switchButtons) => {
         })
     }
 }
-
 const createLocalDate = (date) => {
     const localDate = new Date(date);
     const currentDate = {
@@ -44,7 +46,8 @@ const createLocalDate = (date) => {
         day: localDate.getDate() < 10 ? `0${localDate.getDate()}` : localDate.getDate(),
         hours: localDate.getHours(),
         minutes: localDate.getMinutes(),
-        seconds: localDate.getSeconds()
+        seconds: localDate.getSeconds(),
+        dayName: localDate.toLocaleString('uk', { weekday: 'long' })[0].toUpperCase() + localDate.toLocaleString('uk', { weekday: 'long' }).slice(1)
     }
     return currentDate;
 }
@@ -52,7 +55,7 @@ const createLocalDate = (date) => {
 const createCurrentWeather = (currentData) => {
     const currentLocalDate = createLocalDate(currentData.LocalObservationDateTime)
     const createCurrentWeatherMarkup = (currentLocalDate, currentData) =>
-    `
+        `
         <div class='current-conditions-block'>
             <div class='current-condition-title'>Зараз</div>
             <div class='current-location-block'>
@@ -81,17 +84,18 @@ const createCurrentWeather = (currentData) => {
 }
 
 const createDailyForecastsMarkup = (dailyForecasts) =>
-        `
-            <div class='forecast-wrapper'>
-                ${createForecasts(dailyForecasts, 'Day')}
-                ${createForecasts(dailyForecasts, 'Night')}
+    `       <div class='forecast-wrapper'>
+                        <div class='forecasts-date'>
+                            ${createLocalDate(dailyForecasts.Date).dayName}
+                        </div>
+                    ${createForecasts(dailyForecasts, 'Day')}
+                    ${createForecasts(dailyForecasts, 'Night')}
             </div>
         `
 
 const createForecasts = (data, time) =>
     `
      <div class='daily-forecasts-data'>
-        <div class='daily-forecasts-date'>${time} - ${createLocalDate(data.Date).day}.${createLocalDate(data.Date).month}.${createLocalDate(data.Date).year}</div>
         <div class='daily-forecasts-data-condition-header'>
             <img class='daily-forecasts-data-condition-icon' 
                 src='https://developer.accuweather.com/sites/default/files/${data[time].Icon < 10 ? `0${data[time].Icon}` : data[time].Icon}-s.png'
@@ -124,8 +128,8 @@ const createForecasts = (data, time) =>
             </div>
         </div>
     </div>
-    `
 
+    `
 
 const createDailyForecasts = (dailyForecasts) => {
     const dailyForecastBlock = document.createElement('div');
@@ -142,12 +146,12 @@ const createFiveDaysForecast = (dailyForecasts) => {
     contentSectionElement.appendChild(fiveDaysForecastBlock);
 }
 
-const createTenDaysForecast = (dailyForecasts) => {
-    const tenDaysForecastBlock = document.createElement('div');
-    tenDaysForecastBlock.classList.add('ten-days-forecast-block', 'weather-block');
-    fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
-    contentSectionElement.appendChild(tenDaysForecastBlock);
-}
+// const createTenDaysForecast = (dailyForecasts) => {
+//     const tenDaysForecastBlock = document.createElement('div');
+//     tenDaysForecastBlock.classList.add('ten-days-forecast-block', 'weather-block');
+//     fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
+//     contentSectionElement.appendChild(tenDaysForecastBlock);
+// }
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
     const { Key } = currentLocation
@@ -180,13 +184,13 @@ const apiGetFiveDaysForecastRequest = (currentLocation) => {
         .then(data => createFiveDaysForecast(data))
 }
 
-const apiGetTenDaysForecastRequest = (currentLocation) => {
-    const { Key } = currentLocation;
-    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/10day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
-        .then(response => response.json())
-        .then(data => createTenDaysForecast(data))
+// const apiGetTenDaysForecastRequest = (currentLocation) => {
+//     const { Key } = currentLocation;
+//     fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/10day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
+//         .then(response => response.json())
+//         .then(data => createTenDaysForecast(data))
 
-}
+// }
 
 const apiGetCurrentLocationRequest = (userPosition) => {
     const { latitude, longitude } = userPosition.coords;
@@ -196,7 +200,7 @@ const apiGetCurrentLocationRequest = (userPosition) => {
             apiGetCurrentConditionsRequest(data[0])
             apiGetDailyForecastRequest(data[0])
             apiGetFiveDaysForecastRequest(data[0])
-            apiGetTenDaysForecastRequest(data[0])
+            // apiGetTenDaysForecastRequest(data[0])
         })
 }
 

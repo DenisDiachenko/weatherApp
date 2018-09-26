@@ -65,7 +65,11 @@ body {
   display: none;
   position: relative;
   overflow: hidden;
-  width: 600px;
+  width: 640px;
+}
+.slider-container {
+  display: flex;
+  justify-content: center;
 }
 .slider-wrapper {
   display: flex;

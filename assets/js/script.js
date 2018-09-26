@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis.diachenko@outlook.com
- const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
+//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
 
 // sarmat4ever@gmail.com
-//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 const localLang = `uk-ua`;
 
@@ -33,11 +33,100 @@ const addEventListenerForButtons = (switchButtons) => {
                 for (let block of weatherBlocks) {
                     block.style.display = 'none';
                 }
-                targetWeatherBlock.style.display = 'flex';
+                targetWeatherBlock.style.display = 'block';
             }
         })
     }
 }
+
+const createSlidesAction = (sliderWrapper, slidesElements) => {
+    if (sliderWrapper) {
+        let i = 1;
+        let currentPosition = 0;
+        let nextPosition = 0;
+
+        const styles = window.getComputedStyle(slidesElements[i], null);
+        const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
+
+        // next.addEventListener('click', event => {
+        //     console.log(i)
+        //     if (i < slidesElements.length - 2) {
+        //         const offsetWidth = slidesElements[i].offsetWidth;
+        //         currentPosition = offsetWidth + parseInt(marginRigth);
+        //         nextPosition += currentPosition;
+        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+        //         i++;
+        //     }
+        //     else {
+        //         sliderWrapper.style.transform = `translateX(${0}px)`
+        //         i = 1;
+        //         currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
+        //         nextPosition = 0;
+        //     }
+        // });
+        // prev.addEventListener('click', event => {
+        //     if(i > 1) {
+        //         const offsetWidth = slidesElements[i].offsetWidth;
+        //         currentPosition = offsetWidth + parseInt(marginRigth);
+        //         nextPosition -= currentPosition;
+        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+        //         i--;
+        //     }
+        //     else {
+        //         let allOffsetWidth = 0;
+        //         let allMargins = 0;
+        //         let styles;
+        //         for (let j = 1; j < slidesElements.length-2; j++) {
+        //             allOffsetWidth += slidesElements[j].offsetWidth;
+        //             styles = window.getComputedStyle(slidesElements[j], null);
+        //             allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
+        //         }
+        //         nextPosition = allOffsetWidth + allMargins
+        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+        //         i = slidesElements.length-2
+        //     }
+        // })
+        next.addEventListener('touchstart', event => {
+            console.log(i)
+            if (i < slidesElements.length - 2) {
+                const offsetWidth = slidesElements[i].offsetWidth;
+                currentPosition = offsetWidth + parseInt(marginRigth);
+                nextPosition += currentPosition;
+                sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+                i++;
+            }
+            else {
+                sliderWrapper.style.transform = `translateX(${0}px)`
+                i = 1;
+                currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
+                nextPosition = 0;
+            }
+        });
+        prev.addEventListener('touchstart', event => {
+            if(i > 1) {
+                const offsetWidth = slidesElements[i].offsetWidth;
+                currentPosition = offsetWidth + parseInt(marginRigth);
+                nextPosition -= currentPosition;
+                sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+                i--;
+            }
+            else {
+                let allOffsetWidth = 0;
+                let allMargins = 0;
+                let styles;
+                for (let j = 1; j < slidesElements.length-2; j++) {
+                    allOffsetWidth += slidesElements[j].offsetWidth;
+                    styles = window.getComputedStyle(slidesElements[j], null);
+                    allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
+                }
+                nextPosition = allOffsetWidth + allMargins
+                sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+                i = slidesElements.length-2
+            }
+        })
+    }
+}
+
 const createLocalDate = (date) => {
     const localDate = new Date(date);
     const currentDate = {
@@ -139,81 +228,78 @@ const createDailyForecasts = (dailyForecasts) => {
 }
 
 const createFiveDaysForecast = (dailyForecasts) => {
-    console.log(dailyForecasts)
     const fiveDaysForecastBlock = document.createElement('div');
+    const sliderWrapperElement = document.createElement('div');
+    sliderWrapperElement.classList.add('slider-wrapper');
     fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
-    fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('')
+    sliderWrapperElement.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
+    fiveDaysForecastBlock.appendChild(sliderWrapperElement);
     contentSectionElement.appendChild(fiveDaysForecastBlock);
 }
 
-// const createTenDaysForecast = (dailyForecasts) => {
-//     const tenDaysForecastBlock = document.createElement('div');
-//     tenDaysForecastBlock.classList.add('ten-days-forecast-block', 'weather-block');
-//     fiveDaysForecastBlock.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
-//     contentSectionElement.appendChild(tenDaysForecastBlock);
-// }
-
 const apiGetCurrentConditionsRequest = (currentLocation) => {
-    const { Key } = currentLocation
-    const currentArea = {
-        curentCountry: currentLocation.Country.LocalizedName,
-        currentCity: currentLocation.LocalizedName
-    };
-    fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
-        .then(response => response.json())
-        .then(data => {
-            const currentData = {
-                ...currentArea,
-                ...data[0]
-            };
-            createCurrentWeather(currentData);
-        })
+    return new Promise(async (resolve) => {
+        const { Key } = currentLocation
+        const currentArea = {
+            curentCountry: currentLocation.Country.LocalizedName,
+            currentCity: currentLocation.LocalizedName
+        };
+        const response = await fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+        const data = await response.json();
+        const currentData = {
+            ...currentArea,
+            ...data[0]
+        }
+        createCurrentWeather(currentData);
+        resolve();
+    })
 }
 
 const apiGetDailyForecastRequest = (currentLocation) => {
-    const { Key } = currentLocation;
-    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/1day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
-        .then(response => response.json())
-        .then(data => createDailyForecasts(data.DailyForecasts[0]))
+    return new Promise(async (resolve) => {
+        const { Key } = currentLocation;
+        const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/1day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
+        const data = await response.json();
+        createDailyForecasts(data.DailyForecasts[0]);
+        resolve();
+    })
 }
 
 const apiGetFiveDaysForecastRequest = (currentLocation) => {
-    const { Key } = currentLocation;
-    fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
-        .then(response => response.json())
-        .then(data => createFiveDaysForecast(data))
+    return new Promise(async (resolve) => {
+        const { Key } = currentLocation;
+        const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
+        const data = await response.json();
+        createFiveDaysForecast(data);
+        resolve();
+    })
 }
 
-// const apiGetTenDaysForecastRequest = (currentLocation) => {
-//     const { Key } = currentLocation;
-//     fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/10day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
-//         .then(response => response.json())
-//         .then(data => createTenDaysForecast(data))
-
-// }
-
-const apiGetCurrentLocationRequest = (userPosition) => {
-    const { latitude, longitude } = userPosition.coords;
-    fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${latitude}%2C%20${longitude}&language=${localLang}`)
-        .then(response => response.json())
-        .then(data => {
-            apiGetCurrentConditionsRequest(data[0])
-            apiGetDailyForecastRequest(data[0])
-            apiGetFiveDaysForecastRequest(data[0])
-            // apiGetTenDaysForecastRequest(data[0])
-        })
+const apiGetCurrentLocationRequest = async (userPosition) => {
+    return new Promise(async (resolve) => {
+        const { latitude, longitude } = userPosition.coords;
+        const response = await fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${latitude}%2C%20${longitude}&language=${localLang}`)
+        const data = await response.json();
+        apiGetCurrentConditionsRequest(data[0]);
+        await apiGetDailyForecastRequest(data[0]);
+        await apiGetFiveDaysForecastRequest(data[0]);
+        resolve();
+    })
 }
 
 
-window.onload = function () {
+window.onload = () => {
     let userPosition;
     const geoOptions = {
         maximumAge: 5 * 60 * 1000,
         timeout: 5000
     }
-    const geoSuccess = (position) => {
+    const geoSuccess = async (position) => {
         userPosition = position;
-        apiGetCurrentLocationRequest(userPosition);
+        await apiGetCurrentLocationRequest(userPosition);
+        const sliderWrapperElement = document.querySelector('.slider-wrapper');
+        const slidesElements = document.querySelectorAll('.forecast-wrapper');
+        createSlidesAction(sliderWrapperElement, slidesElements);
     };
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)

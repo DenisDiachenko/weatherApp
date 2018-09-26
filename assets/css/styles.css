@@ -63,4 +63,18 @@ body {
 
 .five-days-forecast-block {
   display: none;
+  position: relative;
+  overflow: hidden;
+  width: 600px;
+}
+.slider-wrapper {
+  display: flex;
+  position: relative;
+  width: 9999px;
+  transition: all 0.5s ease; 
+  touch-action: manipulation;
+}
+.forecast-wrapper {
+  width: 300px;
+  margin-right: 20px;
 }

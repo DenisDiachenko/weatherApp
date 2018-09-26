@@ -8,6 +8,7 @@ const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 const localLang = `uk-ua`;
 
+const sliderContainerElement = document.querySelector('.slider-container');
 const contentSectionElement = document.querySelector('.content-section');
 const burgerContainerElement = document.querySelector('.burger-continer');
 const switchButtons = document.querySelectorAll('.switch-button');
@@ -40,7 +41,6 @@ const addEventListenerForButtons = (switchButtons) => {
 }
 
 const createSlidesAction = (sliderWrapper, slidesElements) => {
-    if (sliderWrapper) {
         let i = 1;
         let currentPosition = 0;
         let nextPosition = 0;
@@ -86,7 +86,6 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
                 i = slidesElements.length-2
             }
         })
-    }
 }
 
 const createLocalDate = (date) => {
@@ -196,7 +195,7 @@ const createFiveDaysForecast = (dailyForecasts) => {
     fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
     sliderWrapperElement.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
     fiveDaysForecastBlock.appendChild(sliderWrapperElement);
-    contentSectionElement.appendChild(fiveDaysForecastBlock);
+    sliderContainerElement.appendChild(fiveDaysForecastBlock);
 }
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {

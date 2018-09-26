@@ -48,45 +48,7 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
         const styles = window.getComputedStyle(slidesElements[i], null);
         const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
 
-        // next.addEventListener('click', event => {
-        //     console.log(i)
-        //     if (i < slidesElements.length - 2) {
-        //         const offsetWidth = slidesElements[i].offsetWidth;
-        //         currentPosition = offsetWidth + parseInt(marginRigth);
-        //         nextPosition += currentPosition;
-        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-        //         i++;
-        //     }
-        //     else {
-        //         sliderWrapper.style.transform = `translateX(${0}px)`
-        //         i = 1;
-        //         currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
-        //         nextPosition = 0;
-        //     }
-        // });
-        // prev.addEventListener('click', event => {
-        //     if(i > 1) {
-        //         const offsetWidth = slidesElements[i].offsetWidth;
-        //         currentPosition = offsetWidth + parseInt(marginRigth);
-        //         nextPosition -= currentPosition;
-        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-        //         i--;
-        //     }
-        //     else {
-        //         let allOffsetWidth = 0;
-        //         let allMargins = 0;
-        //         let styles;
-        //         for (let j = 1; j < slidesElements.length-2; j++) {
-        //             allOffsetWidth += slidesElements[j].offsetWidth;
-        //             styles = window.getComputedStyle(slidesElements[j], null);
-        //             allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
-        //         }
-        //         nextPosition = allOffsetWidth + allMargins
-        //         sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-        //         i = slidesElements.length-2
-        //     }
-        // })
-        next.addEventListener('touchstart', event => {
+        next.addEventListener('click', event => {
             console.log(i)
             if (i < slidesElements.length - 2) {
                 const offsetWidth = slidesElements[i].offsetWidth;
@@ -102,7 +64,7 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
                 nextPosition = 0;
             }
         });
-        prev.addEventListener('touchstart', event => {
+        prev.addEventListener('click', event => {
             if(i > 1) {
                 const offsetWidth = slidesElements[i].offsetWidth;
                 currentPosition = offsetWidth + parseInt(marginRigth);

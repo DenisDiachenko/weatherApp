@@ -88,11 +88,11 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
             i = slidesElements.length - 2
         }
     });
-    sliderContainerElement.addEventListener('touchstart', event => {
+    sliderWrapper.addEventListener('touchstart', event => {
         touchStartX = event.changedTouches[0].screenX;
     }, false)
 
-    sliderContainerElement.addEventListener('touchend', event => {
+    sliderWrapper.addEventListener('touchend', event => {
         touchEndX = event.changedTouches[0].screenX;
         if (touchStartX >= touchEndX) {
             if (i < slidesElements.length - 2) {
@@ -132,15 +132,6 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
             }
         }
     }, false)
-
-    sliderContainerElement.addEventListener('touchmove', event => {
-        if(touchStartX >= event.changedTouches[0].screenX) {
-            sliderWrapper.style.transform = `translateX(-${touchStartX - event.changedTouches[0].screenX}px)`;
-        }
-        else {
-            sliderWrapper.style.transform = `translateX(-${event.changedTouches[0].screenX-touchStartX}px)`;
-        }
-    })
    
 }
 

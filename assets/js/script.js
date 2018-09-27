@@ -41,15 +41,65 @@ const addEventListenerForButtons = (switchButtons) => {
 }
 
 const createSlidesAction = (sliderWrapper, slidesElements) => {
-        let i = 1;
-        let currentPosition = 0;
-        let nextPosition = 0;
+    let i = 1;
+    let currentPosition = 0;
+    let nextPosition = 0;
 
-        const styles = window.getComputedStyle(slidesElements[i], null);
-        const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
+    let touchStartX = 0;
+    let touchEndX = 0;
 
-        next.addEventListener('click', event => {
-            console.log(i)
+    const styles = window.getComputedStyle(slidesElements[i], null);
+    const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
+
+    next.addEventListener('click', event => {
+        if (i < slidesElements.length - 2) {
+            const offsetWidth = slidesElements[i].offsetWidth;
+            currentPosition = offsetWidth + parseInt(marginRigth);
+            nextPosition += currentPosition;
+            sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+            i++;
+        }
+        else {
+            sliderWrapper.style.transform = `translateX(${0}px)`
+            i = 1;
+            currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
+            nextPosition = 0;
+        }
+    });
+    prev.addEventListener('click', event => {
+        if (i > 1) {
+            const offsetWidth = slidesElements[i].offsetWidth;
+            currentPosition = offsetWidth + parseInt(marginRigth);
+            nextPosition -= currentPosition;
+            sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+            i--;
+        }
+        else {
+            let allOffsetWidth = 0;
+            let allMargins = 0;
+            let styles;
+            for (let j = 1; j < slidesElements.length - 2; j++) {
+                allOffsetWidth += slidesElements[j].offsetWidth;
+                styles = window.getComputedStyle(slidesElements[j], null);
+                allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
+            }
+            nextPosition = allOffsetWidth + allMargins
+            sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
+            i = slidesElements.length - 2
+        }
+    });
+    sliderWrapper.addEventListener('touchstart', event => {
+        touchStartX = event.changedTouches[0].screenX;
+        console.log('start ' + touchStartX);
+    }, false)
+
+    sliderWrapper.addEventListener('touchend', event => {
+        touchEndX = event.changedTouches[0].screenX;
+        console.log('end ' + touchEndX)
+    }, false)
+
+    sliderWrapper.addEventListener('touchmove', event => {
+        if (touchStartX >= touchEndX) {
             if (i < slidesElements.length - 2) {
                 const offsetWidth = slidesElements[i].offsetWidth;
                 currentPosition = offsetWidth + parseInt(marginRigth);
@@ -63,9 +113,9 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
                 currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
                 nextPosition = 0;
             }
-        });
-        prev.addEventListener('click', event => {
-            if(i > 1) {
+        }
+        else {
+            if (i > 1) {
                 const offsetWidth = slidesElements[i].offsetWidth;
                 currentPosition = offsetWidth + parseInt(marginRigth);
                 nextPosition -= currentPosition;
@@ -76,16 +126,17 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
                 let allOffsetWidth = 0;
                 let allMargins = 0;
                 let styles;
-                for (let j = 1; j < slidesElements.length-2; j++) {
+                for (let j = 1; j < slidesElements.length - 2; j++) {
                     allOffsetWidth += slidesElements[j].offsetWidth;
                     styles = window.getComputedStyle(slidesElements[j], null);
                     allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
                 }
                 nextPosition = allOffsetWidth + allMargins
                 sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-                i = slidesElements.length-2
+                i = slidesElements.length - 2
             }
-        })
+        }
+    }, false)
 }
 
 const createLocalDate = (date) => {

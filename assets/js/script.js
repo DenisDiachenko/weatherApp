@@ -95,10 +95,6 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
 
     sliderWrapper.addEventListener('touchend', event => {
         touchEndX = event.changedTouches[0].screenX;
-        console.log('end ' + touchEndX)
-    }, false)
-
-    sliderWrapper.addEventListener('touchmove', event => {
         if (touchStartX >= touchEndX) {
             if (i < slidesElements.length - 2) {
                 const offsetWidth = slidesElements[i].offsetWidth;

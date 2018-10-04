@@ -108,13 +108,13 @@ const createSlidesAction = (sliderWrapper) => {
             }
             else {
                 sliderWrapper.style.transform = `translateX(${0}px)`
-                i = 1;
+                i = 0;
                 currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
                 nextPosition = 0;
             }
         }
         else {
-            if (i > 1) {
+            if (i > 0) {
                 const offsetWidth = slidesElements[i].offsetWidth;
                 currentPosition = offsetWidth + parseInt(marginRigth);
                 nextPosition -= currentPosition;

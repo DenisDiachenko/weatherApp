@@ -40,13 +40,17 @@ const addEventListenerForButtons = (switchButtons) => {
     }
 }
 
-const createSlidesAction = (sliderWrapper, slidesElements) => {
-    let i = 1;
+const createSlidesAction = (sliderWrapper) => {
+    let i = 0;
     let currentPosition = 0;
     let nextPosition = 0;
 
     let touchStartX = 0;
     let touchEndX = 0;
+
+    const slidesElements = sliderWrapper.children;
+
+    console.log(slidesElements, slidesElements.length);
 
     const styles = window.getComputedStyle(slidesElements[i], null);
     const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
@@ -61,7 +65,7 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
         }
         else {
             sliderWrapper.style.transform = `translateX(${0}px)`
-            i = 1;
+            i = 0;
             currentPosition = slidesElements[0].offsetWidth + parseInt(marginRigth);
             nextPosition = 0;
         }
@@ -78,14 +82,14 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
             let allOffsetWidth = 0;
             let allMargins = 0;
             let styles;
-            for (let j = 1; j < slidesElements.length - 1; j++) {
+            for (let j = 1; j < slidesElements.length; j++) {
                 allOffsetWidth += slidesElements[j].offsetWidth;
                 styles = window.getComputedStyle(slidesElements[j], null);
                 allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
             }
             nextPosition = allOffsetWidth + allMargins
             sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-            i = slidesElements.length - 2
+            i = slidesElements.length-1;
         }
     });
     sliderWrapper.addEventListener('touchstart', event => {
@@ -95,7 +99,7 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
     sliderWrapper.addEventListener('touchend', event => {
         touchEndX = event.changedTouches[0].screenX;
         if (touchStartX >= touchEndX) {
-            if (i < slidesElements.length - 1) {
+            if (i < slidesElements.length -1) {
                 const offsetWidth = slidesElements[i].offsetWidth;
                 currentPosition = offsetWidth + parseInt(marginRigth);
                 nextPosition += currentPosition;
@@ -121,14 +125,14 @@ const createSlidesAction = (sliderWrapper, slidesElements) => {
                 let allOffsetWidth = 0;
                 let allMargins = 0;
                 let styles;
-                for (let j = 1; j < slidesElements.length - 1; j++) {
+                for (let j = 1; j < slidesElements.length; j++) {
                     allOffsetWidth += slidesElements[j].offsetWidth;
                     styles = window.getComputedStyle(slidesElements[j], null);
                     allMargins += parseInt(styles.marginRight.slice(0, styles.marginRight.indexOf('p')));
                 }
                 nextPosition = allOffsetWidth + allMargins
                 sliderWrapper.style.transform = `translateX(-${nextPosition}px)`;
-                i = slidesElements.length - 1
+                i = slidesElements.length-1;
             }
         }
     }, false)
@@ -306,8 +310,7 @@ window.onload = () => {
         userPosition = position;
         await apiGetCurrentLocationRequest(userPosition);
         const sliderWrapperElement = document.querySelector('.slider-wrapper');
-        const slidesElements = document.querySelectorAll('.forecast-wrapper');
-        createSlidesAction(sliderWrapperElement, slidesElements);
+        createSlidesAction(sliderWrapperElement);
     };
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)

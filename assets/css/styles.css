@@ -65,7 +65,7 @@ body {
   display: none;
   position: relative;
   overflow: hidden;
-  width: 640px;
+  width: 320px;
 }
 .slider-container {
   display: flex;

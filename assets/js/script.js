@@ -91,12 +91,12 @@ const createSlidesAction = (sliderWrapper) => {
         }
     });
     sliderWrapper.addEventListener('touchstart', event => {
-        event.preventDefault();
+
         touchStartX = event.changedTouches[0].screenX;
     }, false)
 
     sliderWrapper.addEventListener('touchend', event => {
-        event.preventDefault();
+
         touchEndX = event.changedTouches[0].screenX;
         if (touchStartX >= touchEndX) {
             if (i < slidesElements.length -1) {

@@ -50,8 +50,6 @@ const createSlidesAction = (sliderWrapper) => {
 
     const slidesElements = sliderWrapper.children;
 
-    console.log(slidesElements, slidesElements.length);
-
     const styles = window.getComputedStyle(slidesElements[i], null);
     const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
 

@@ -154,7 +154,7 @@ const createLocalDate = (date) => {
 
 const createCurrentWeather = (currentData) => {
     const currentLocalDate = createLocalDate(currentData.LocalObservationDateTime)
-    const createCurrentWeatherMarkup = (currentLocalDate, currentData) =>
+    const createCurrentWeatherMarkup = (currentData) =>
         `
             <div class='current-location-block'>
                 <div class='current-location-country'>${currentData.curentCountry},</div>
@@ -178,7 +178,21 @@ const createCurrentWeather = (currentData) => {
     `
     const currentConditionsBlock = document.createElement('div');
     currentConditionsBlock.classList.add('current-conditions-block');
-    currentConditionsBlock.innerHTML = createCurrentWeatherMarkup(currentLocalDate, currentData)
+
+    if(currentLocalDate.hours > 5 && currentLocalDate.hours < 11) {
+        document.body.style.backgroundImage = "url('assets/img/sunrise.jpg')";
+    }
+    if(currentLocalDate.hours > 10 && currentLocalDate.hours < 18) {
+        document.body.style.backgroundImage = "url('assets/img/day.jpg')";
+    }
+    if(currentLocalDate.hours > 17 && currentLocalDate.hours < 20) {
+        document.body.style.backgroundImage = "url('assets/img/sunset.jpg')";
+    }
+    if(currentLocalDate.hours > 19 && currentLocalDate.hours < 23 && currentLocalDate.hours > 0 && currentLocalDate.hours < 5) {
+        document.body.style.backgroundImage = "url('assets/img/night.jpg')";
+    }
+    
+    currentConditionsBlock.innerHTML = createCurrentWeatherMarkup(currentData)
     contentSectionElement.insertBefore(currentConditionsBlock, contentSectionElement.firstChild);
 }
 
@@ -240,11 +254,11 @@ const createTwelveHoursForecast = (data) => {
         </div>
         `
     const twelveHoursForecastElement = document.createElement('div');
-    twelveHoursForecastElement.classList.add('daily-forecast-block', 'hidden', 'weather-block');
+    twelveHoursForecastElement.classList.add('daily-forecast-block', 'weather-block');
     twelveHoursForecastElement.innerHTML = data.map(createMarkup).join('');
     contentSectionElement.appendChild(twelveHoursForecastElement);
     twelveHoursForecastElement.addEventListener('click', event => {
-        twelveHoursForecastElement.classList.toggle('hidden');
+        twelveHoursForecastElement.classList.toggle('open');
     })
 }
 

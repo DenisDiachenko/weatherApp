@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis.diachenko@outlook.com
-//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
+const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`
 
 // sarmat4ever@gmail.com
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 const localLang = `uk-ua`;
 
@@ -91,10 +91,12 @@ const createSlidesAction = (sliderWrapper) => {
         }
     });
     sliderWrapper.addEventListener('touchstart', event => {
+        event.preventDefault();
         touchStartX = event.changedTouches[0].screenX;
     }, false)
 
     sliderWrapper.addEventListener('touchend', event => {
+        event.preventDefault();
         touchEndX = event.changedTouches[0].screenX;
         if (touchStartX >= touchEndX) {
             if (i < slidesElements.length -1) {

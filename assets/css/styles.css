@@ -1,0 +1,162 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    font-family: 'Philosopher', sans-serif;
+    font-size: 18px;
+    color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+.menu {
+  top: 0;
+  left: 0;
+  position: absolute;
+  background: grey;
+  opacity: 0.2;
+  width: 0px;
+  height: 100%;
+  transition: 0.4s;
+}
+
+.menu.open {
+  width: 100px;
+}
+
+.burger-continer {
+  position: absolute;
+  top:0;
+  left: 0;
+}
+  .burger-line-first,
+  .burger-line-second,
+  .burger-line-third {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+  }
+
+  .change .burger-line-first {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px) ;
+    transform: rotate(-45deg) translate(-9px, 6px);
+  }
+  .change .burger-line-second {
+    opacity: 0;
+  }
+
+  .change .burger-line-third {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
+    transform: rotate(45deg) translate(-8px, -8px) ;
+}
+.navbar {
+  display: flex;
+  justify-content: center;
+}
+
+.daily-forecasts-data-condition-header {
+  display: flex;
+  align-items: center
+}
+
+.forecast-wrapper .forecasts-date {
+  display: flex;
+  justify-content: center;
+}
+
+.daily-forecasts-data-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.five-days-forecast-block {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  width: 320px;
+}
+.slider-container {
+  display: flex;
+  justify-content: center;
+}
+.slider-nav {
+  display: none;
+  justify-content: space-around;
+  padding: 15px 0 15px 0;
+}
+
+.separator {
+  padding: 0px 10px 0px 10px
+}
+.slider-wrapper {
+  display: flex;
+  position: relative;
+  width: 9999px;
+  transition: all 0.5s ease; 
+  touch-action: manipulation;
+}
+.forecast-wrapper {
+  width: 300px;
+  margin-right: 20px;
+}
+
+.current-conditions-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 50vh;
+}
+
+.current-location-block {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 35px;
+}
+
+.current-location-block > div {
+  padding: 10px 0px 10px 5px;
+}
+
+.сurrent-weather-block {
+  display: flex;
+  justify-content: center;
+}
+
+.current-weather-icon > img {
+  width: 120px;
+}
+
+.current-weather-temperature {
+  display: flex;
+  align-items: center;
+}
+
+.daily-forecast-block {
+  position: absolute;
+  height: 38vh;
+  width: 100%;
+  bottom: 20px;
+  padding: 15px;
+  overflow: hidden;
+  transition: 0.5s;
+  box-sizing: border-box;
+}
+
+.daily-forecast-block.open {
+  height: 97vh;
+}
+
+.forecast-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hours-weather-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 170px;
+}

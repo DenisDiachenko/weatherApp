@@ -5,6 +5,8 @@ body {
     font-family: 'Philosopher', sans-serif;
     font-size: 18px;
     color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
 .menu {
@@ -152,7 +154,6 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
 .hours-weather-block {
   display: flex;
   align-items: center;

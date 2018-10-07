@@ -188,7 +188,7 @@ const createCurrentWeather = (currentData) => {
     if(currentLocalDate.hours > 17 && currentLocalDate.hours < 20) {
         document.body.style.backgroundImage = "url('assets/img/sunset.jpg')";
     }
-    if(currentLocalDate.hours > 19 && currentLocalDate.hours < 23 && currentLocalDate.hours > 0 && currentLocalDate.hours < 5) {
+    if((currentLocalDate.hours > 19 && currentLocalDate.hours < 24) || (currentLocalDate.hours >= 0 && currentLocalDate.hours < 5)) {
         document.body.style.backgroundImage = "url('assets/img/night.jpg')";
     }
     

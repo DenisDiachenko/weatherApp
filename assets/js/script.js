@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis
-//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 const localLang = `uk-ua`;
 

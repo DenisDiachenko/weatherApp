@@ -294,7 +294,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
 const apiGetTwelveHoursForecast = (currentLocation) => {
     return new Promise(async (resolve) => {
         const { Key } = currentLocation;
-        const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
+        const response = await fetch(`http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
         const data = await response.json();
         createTwelveHoursForecast(data);
         resolve();

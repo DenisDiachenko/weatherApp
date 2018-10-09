@@ -13,6 +13,12 @@
 <body>
     <div class='main'>
         <div class='menu'>
+            <div class="input-container">
+                <input id='seacrh-location-input' type="text" name="search-location" placeholder="Enter city's name..." />
+            </div>
+        </div>
+        <div class="search-icon">
+            <img src="assets/img/search-location-solid.svg" alt="seacrh-location" />
         </div>
         <main>
             <section class='content-section'>
@@ -21,34 +27,13 @@
                     <span class="separator"> | </span>
                     <span class='five-days switch-button'>П'ять днів</span>
                 </nav>
-                <div class='background-wrapper'>
-                    
-                </div>
+                <div class='background-wrapper'></div>
                 <div class="slider-nav">
                     <span class='prev'>
-                        <?xml version="1.0"?>
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-                            id="Capa_1" x="0px" y="0px" width="40px" height="20px" viewBox="0 0 268.832 268.832" style="enable-background:new 0 0 268.832 268.832;"
-                            xml:space="preserve">
-                            <g transform="matrix(-1 0 0 1 268.832 0)">
-                                <g>
-                                    <path d="M265.171,125.577l-80-80c-4.881-4.881-12.797-4.881-17.678,0c-4.882,4.882-4.882,12.796,0,17.678l58.661,58.661H12.5   c-6.903,0-12.5,5.597-12.5,12.5c0,6.902,5.597,12.5,12.5,12.5h213.654l-58.659,58.661c-4.882,4.882-4.882,12.796,0,17.678   c2.44,2.439,5.64,3.661,8.839,3.661s6.398-1.222,8.839-3.661l79.998-80C270.053,138.373,270.053,130.459,265.171,125.577z"
-                                        data-original="#000000" class="active-path" fill="#000000" />
-                                </g>
-                            </g>
-                        </svg>
+                        <img src="assets/img/arrow-pointing-to-left.svg" alt="prev-slide" />
                     </span>
                     <span class='next'>
-                        <?xml version="1.0" encoding="iso-8859-1"?>
-                        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            x="0px" y="0px" width="40px" height="20px" viewBox="0 0 268.832 268.832" style="enable-background: white"
-                            xml:space="preserve">
-                            <g>
-                                <path d="M265.171,125.577l-80-80c-4.881-4.881-12.797-4.881-17.678,0c-4.882,4.882-4.882,12.796,0,17.678l58.661,58.661H12.5
-                                c-6.903,0-12.5,5.597-12.5,12.5c0,6.902,5.597,12.5,12.5,12.5h213.654l-58.659,58.661c-4.882,4.882-4.882,12.796,0,17.678
-                                c2.44,2.439,5.64,3.661,8.839,3.661s6.398-1.222,8.839-3.661l79.998-80C270.053,138.373,270.053,130.459,265.171,125.577z" />
-                            </g>
-                        </svg>
+                        <img src="assets/img/arrow-pointing-to-right.svg" alt="next-slide" />
                     </span>
                 </div>
                 <div class='slider-container'>
@@ -61,6 +46,7 @@
         </footer>
     </div>
     <script type='text/javascript' src='assets/js/script.js'></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHIc6eazmUJdeyG3XIYgh1c0oGpM8A-8w&libraries=places"></script>
 </body>
 
 </html>

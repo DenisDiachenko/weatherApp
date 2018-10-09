@@ -1,7 +1,7 @@
 //keys for api request
 
 // denis
-//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
 //const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
@@ -10,7 +10,7 @@
 // const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
-const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
+//const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 
@@ -28,6 +28,8 @@ const next = document.querySelector('.next');
 const searchIconContainerElement = document.querySelector('.search-icon');
 const serchInputElement = document.getElementById('seacrh-location-input');
 const autocompleteResultElement = document.querySelector('.autocomplete-field');
+
+let globalWeatherData = [];
 
 const checkAdministrativeAreaEnd = (locationString) => {
     if ((locationString.indexOf(' ') === -1) && (locationString.indexOf('ка', locationString.length - 2) !== -1)) {
@@ -347,7 +349,7 @@ const createFiveDaysForecast = (dailyForecasts) => {
     const sliderWrapperElement = document.createElement('div');
     sliderWrapperElement.classList.add('slider-wrapper');
     fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
-    sliderWrapperElement.innerHTML = dailyForecasts.DailyForecasts.map(item => createDailyForecastsMarkup(item)).join('');
+    sliderWrapperElement.innerHTML = dailyForecasts.DailyForecasts.map(createDailyForecastsMarkup).join('');
     fiveDaysForecastBlock.appendChild(sliderWrapperElement);
     sliderContainerElement.appendChild(fiveDaysForecastBlock);
 }
@@ -366,7 +368,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
             ...data[0]
         }
         createCurrentWeather(currentData);
-        resolve();
+        resolve(currentData);
     })
 }
 
@@ -376,7 +378,7 @@ const apiGetTwelveHoursForecast = (currentLocation) => {
         const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
         const data = await response.json();
         createTwelveHoursForecast(data);
-        resolve();
+        resolve(data);
     })
 }
 
@@ -386,19 +388,20 @@ const apiGetFiveDaysForecastRequest = (currentLocation) => {
         const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
         const data = await response.json();
         createFiveDaysForecast(data);
-        resolve();
+        resolve(data);
     })
 }
 
-const apiGetCurrentLocationRequest = async (userPosition) => {
+const apiGetGlobalWeatherDataRequest = async (userPosition) => {
     return new Promise(async (resolve) => {
         const { latitude, longitude } = userPosition.coords;
         const response = await fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${latitude}%2C%20${longitude}&language=${localLang}`)
         const data = await response.json();
-        apiGetCurrentConditionsRequest(data[0]);
-        await apiGetTwelveHoursForecast(data[0]);
-        await apiGetFiveDaysForecastRequest(data[0]);
-        resolve();
+        const currentConditionObject = await apiGetCurrentConditionsRequest(data[0]);
+        const twelveHoursForecastObject = await apiGetTwelveHoursForecast(data[0]);
+        const fiveDaysForecastObject = await apiGetFiveDaysForecastRequest(data[0]);
+        const result = [ currentConditionObject, twelveHoursForecastObject, fiveDaysForecastObject ]
+        resolve(result);
     })
 }
 
@@ -411,7 +414,9 @@ window.onload = () => {
     }
     const geoSuccess = async (position) => {
         userPosition = position;
-        await apiGetCurrentLocationRequest(userPosition);
+        const dataObjects = await apiGetGlobalWeatherDataRequest(userPosition);
+        globalWeatherData = [...dataObjects];
+        console.log(globalWeatherData)
         const sliderWrapperElement = document.querySelector('.slider-wrapper');
         createSlidesAction(sliderWrapperElement);
     };

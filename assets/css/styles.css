@@ -14,44 +14,44 @@ body {
   top: 0;
   left: 0;
   position: absolute;
-  background: grey;
-  opacity: 0.2;
+  background: lightskyblue;
   width: 0px;
   height: 100%;
   transition: 0.4s;
+  z-index: 1;
+}
+
+.menu > div {
+  display: none;
 }
 
 .menu.open {
-  width: 100px;
+  width: 100%;
 }
 
-.burger-continer {
+.menu.open > div {
+  display: flex;
+}
+
+.search-icon {
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
+  transition: 0.4s;
+  z-index: 2;
 }
-  .burger-line-first,
-  .burger-line-second,
-  .burger-line-third {
-    width: 20px;
-    height: 3px;
-    background-color: #333;
-    margin: 6px 0;
-    transition: 0.4s;
-  }
 
-  .change .burger-line-first {
-    -webkit-transform: rotate(-45deg) translate(-9px, 6px) ;
-    transform: rotate(-45deg) translate(-9px, 6px);
-  }
-  .change .burger-line-second {
-    opacity: 0;
-  }
-
-  .change .burger-line-third {
-    -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
-    transform: rotate(45deg) translate(-8px, -8px) ;
+.search-icon.moving {
+  left: 85%;
 }
+
+.search-icon > img {
+  width: 20px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .navbar {
   display: flex;
   justify-content: center;

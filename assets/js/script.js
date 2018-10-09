@@ -4,7 +4,13 @@
 //const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+
+//valeri
+// const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+
+//valeri
+const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 
@@ -13,16 +19,64 @@ const contentSectionElement = document.querySelector('.content-section');
 const burgerContainerElement = document.querySelector('.burger-continer');
 const switchButtons = document.querySelectorAll('.switch-button');
 const menuElement = document.querySelector('.menu');
+const backgroundWrapperElement = document.querySelector('.background-wrapper');
 
 const sliderNavElement = document.querySelector('.slider-nav');
-
 const prev = document.querySelector('.prev');
 const next = document.querySelector('.next');
+
+const searchIconContainerElement = document.querySelector('.search-icon');
+const serchInputElement = document.getElementById('seacrh-location-input');
+const autocompleteResultElement = document.querySelector('.autocomplete-field');
+
+const checkAdministrativeAreaEnd = (locationString) => {
+    if ((locationString.indexOf(' ') === -1) && (locationString.indexOf('ка', locationString.length - 2) !== -1)) {
+        return `${locationString} область,`
+    } else {
+        return `${locationString},`;
+    }
+}
+
+serchInputElement.addEventListener('input', async (event) => {
+    if (event.target.value) {
+        const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${event.target.value}&language=${localLang}`)
+        const data = await response.json();
+        const resultsArr = [...data];
+        autocompleteResultElement.innerHTML = data.map(item =>
+            `<div class ='result-container' data-local=${item.Key}>
+                ${item.LocalizedName}, 
+                ${checkAdministrativeAreaEnd(item.AdministrativeArea.LocalizedName)} 
+                ${item.Country.LocalizedName}
+            </div>`
+        ).join('');
+
+        const allResultContainers = document.querySelectorAll('.result-container');
+        if (allResultContainers.length) {
+            for (let container of allResultContainers) {
+                container.addEventListener('click', event => {
+                    const targetKey = parseInt(event.target.dataset.local);
+                    const targetElement = resultsArr.filter(item => parseInt(item.Key) === targetKey);
+                    const apiRequestArr = [
+                        apiGetCurrentConditionsRequest,
+                        apiGetFiveDaysForecastRequest,
+                        apiGetTwelveHoursForecast,
+                    ]
+                    Promise.all(apiRequestArr.map(func => func(targetElement[0])));
+                    for (let container of allResultContainers) {
+                        container.remove();
+                    }
+                    serchInputElement.value = '';
+                    menuElement.classList.toggle('open');
+                    searchIconContainerElement.classList.toggle('moving');
+                });
+            };
+        };
+    };
+});
 
 const addEventListenerForButtons = (switchButtons) => {
     for (const button of switchButtons) {
         button.addEventListener('click', event => {
-            const targetButton = event.target;
             const targetClass = event.target.className;
             const targetBlockClassName = `.${targetClass.slice(0, targetClass.indexOf(' '))}-forecast-block`;
             const targetWeatherBlock = document.querySelector(targetBlockClassName);
@@ -38,6 +92,27 @@ const addEventListenerForButtons = (switchButtons) => {
         })
     }
 }
+
+searchIconContainerElement.addEventListener('click', event => {
+    menuElement.classList.toggle('open');
+    searchIconContainerElement.classList.toggle('moving');
+})
+
+
+
+const returnTermometerIcon = (time) =>
+    `
+    <?xml version="1.0"?>
+    <svg xmlns="https://www.w3.org/2000/svg" height="40px" viewBox="-184 0 581 581.55153" width="40px">
+        <g transform="matrix(0.762267 0 0 0.762267 25.3186 69.1271)">
+        <path d="m107.15625 0c-37.46875.0429688-67.832031 30.40625-67.875 67.875v325.101562c-28.816406 23.519532-43.148438 60.460938-37.734375 97.261719 8.230469 58.328125 62.191406 98.9375 120.515625 90.703125 52.707031-7.441406 91.859375-52.601562 91.75-105.828125.097656-31.824219-14.148438-61.992187-38.785156-82.136719v-325.101562c-.039063-37.46875-30.402344-67.8320312-67.871094-67.875zm87.265625 475.113281c.0625 48.191407-38.953125 87.316407-87.148437 87.378907-48.195313.066406-87.320313-38.953126-87.382813-87.148438-.035156-27.507812 12.898437-53.421875 34.90625-69.925781 2.441406-1.832031 3.878906-4.707031 3.878906-7.757813v-29.207031h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089843h19.390625v-19.390626h-19.390625v-29.089843h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-38.785156c0-26.777344 21.703125-48.480469 48.480469-48.480469 26.773438 0 48.480469 21.703125 48.480469 48.480469v329.804688c0 3.050781 1.4375 5.925781 3.878906 7.753906 22.019531 16.382812 34.96875 42.234375 34.90625 69.679687zm0 0" data-original="#000000" class="active-path" 
+        fill="${((time > 19 && time < 24) || (time >= 0 && time < 5)) ? 'wheat' : '#000000'}"/>
+        <path d="m116.851562 427.601562v-340.335937h-19.390624v340.335937c-26.234376 5.355469-43.160157 30.960938-37.804688 57.195313s30.960938 43.160156 57.195312 37.804687c26.234376-5.355468 43.160157-30.960937 37.804688-57.195312-3.886719-19.042969-18.765625-33.917969-37.804688-37.804688zm-9.695312 76.597657c-16.066406 0-29.089844-13.023438-29.089844-29.085938 0-16.066406 13.023438-29.089843 29.089844-29.089843s29.089844 13.023437 29.089844 29.089843c0 16.0625-13.023438 29.085938-29.089844 29.085938zm0 0" 
+            data-original="#000000" class="active-path" fill="${((time > 19 && time < 24) || (time >= 0 && time < 5)) ? 'wheat' : '#000000'}"/>
+        </g> 
+    </svg>
+    `
+
 
 const createSlidesAction = (sliderWrapper) => {
     let i = 0;
@@ -167,10 +242,8 @@ const createCurrentWeather = (currentData) => {
                         alt='${currentData.WeatherText}' />
                 </div>
                 <div class='current-weather-temperature'>
-                <span>
-                    <?xml version="1.0"?>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="-184 0 581 581.55153" width="40px"><g transform="matrix(0.762267 0 0 0.762267 25.3186 69.1271)"><path d="m107.15625 0c-37.46875.0429688-67.832031 30.40625-67.875 67.875v325.101562c-28.816406 23.519532-43.148438 60.460938-37.734375 97.261719 8.230469 58.328125 62.191406 98.9375 120.515625 90.703125 52.707031-7.441406 91.859375-52.601562 91.75-105.828125.097656-31.824219-14.148438-61.992187-38.785156-82.136719v-325.101562c-.039063-37.46875-30.402344-67.8320312-67.871094-67.875zm87.265625 475.113281c.0625 48.191407-38.953125 87.316407-87.148437 87.378907-48.195313.066406-87.320313-38.953126-87.382813-87.148438-.035156-27.507812 12.898437-53.421875 34.90625-69.925781 2.441406-1.832031 3.878906-4.707031 3.878906-7.757813v-29.207031h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089843h19.390625v-19.390626h-19.390625v-29.089843h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-38.785156c0-26.777344 21.703125-48.480469 48.480469-48.480469 26.773438 0 48.480469 21.703125 48.480469 48.480469v329.804688c0 3.050781 1.4375 5.925781 3.878906 7.753906 22.019531 16.382812 34.96875 42.234375 34.90625 69.679687zm0 0" data-original="#000000" class="active-path" fill="#000000"/><path d="m116.851562 427.601562v-340.335937h-19.390624v340.335937c-26.234376 5.355469-43.160157 30.960938-37.804688 57.195313s30.960938 43.160156 57.195312 37.804687c26.234376-5.355468 43.160157-30.960937 37.804688-57.195312-3.886719-19.042969-18.765625-33.917969-37.804688-37.804688zm-9.695312 76.597657c-16.066406 0-29.089844-13.023438-29.089844-29.085938 0-16.066406 13.023438-29.089843 29.089844-29.089843s29.089844 13.023437 29.089844 29.089843c0 16.0625-13.023438 29.085938-29.089844 29.085938zm0 0" data-original="#000000" class="active-path" fill="#000000"/></g> </svg>
-
+                <span class='termometer'>
+                   ${returnTermometerIcon(currentLocalDate.hours)}
                 </span>
                 <span>${currentData.Temperature.Metric.Value}  ${currentData.Temperature.Metric.Unit}<sup>o</sup></span>
                 </div>
@@ -178,20 +251,24 @@ const createCurrentWeather = (currentData) => {
     `
     const currentConditionsBlock = document.createElement('div');
     currentConditionsBlock.classList.add('current-conditions-block');
-
-    if(currentLocalDate.hours > 5 && currentLocalDate.hours < 11) {
+    backgroundWrapperElement.classList.remove('night');
+    if (currentLocalDate.hours > 5 && currentLocalDate.hours < 11) {
         document.body.style.backgroundImage = "url('assets/img/sunrise.jpg')";
+        backgroundWrapperElement.style.backgroundImage = "url('assets/img/cloud-font.jpg')"
     }
-    if(currentLocalDate.hours > 10 && currentLocalDate.hours < 18) {
+    if (currentLocalDate.hours > 10 && currentLocalDate.hours < 18) {
         document.body.style.backgroundImage = "url('assets/img/day.jpg')";
     }
-    if(currentLocalDate.hours > 17 && currentLocalDate.hours < 20) {
-        document.body.style.backgroundImage = "url('assets/img/sunset.jpg')";
+    if (currentLocalDate.hours > 17 && currentLocalDate.hours < 20) {
+        document.body.style.backgroundImage = "url('assets/img/sunset.png')";
+        document.body.style.backgroundSize = 'cover';
     }
-    if((currentLocalDate.hours > 19 && currentLocalDate.hours < 24) || (currentLocalDate.hours >= 0 && currentLocalDate.hours < 5)) {
+    if ((currentLocalDate.hours > 19 && currentLocalDate.hours < 24) || (currentLocalDate.hours >= 0 && currentLocalDate.hours < 5)) {
         document.body.style.backgroundImage = "url('assets/img/night.jpg')";
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.color = 'wheat';
+        backgroundWrapperElement.classList.add('night');
     }
-    
     currentConditionsBlock.innerHTML = createCurrentWeatherMarkup(currentData)
     contentSectionElement.insertBefore(currentConditionsBlock, contentSectionElement.firstChild);
 }
@@ -234,21 +311,22 @@ const createForecasts = (data, time) =>
     `
 
 const createTwelveHoursForecast = (data) => {
+    const date = new Date();
+    const currentHour = date.getHours()
     const createMarkup = forecast =>
         `
         <div class='twelve-hours forecast-container'>
         <div class='date-hour'>
-            ${createLocalDate(forecast.DateTime).hours < 10 ? 
+            ${createLocalDate(forecast.DateTime).hours < 10 ?
             `0${createLocalDate(forecast.DateTime).hours}`
-             : createLocalDate(forecast.DateTime).hours} : 0${createLocalDate(forecast.DateTime).minutes} 
+            : createLocalDate(forecast.DateTime).hours} : 0${createLocalDate(forecast.DateTime).minutes} 
         </div>
         <div class='hours-weather-block'>
-                <span>
-                    <?xml version="1.0"?>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="-184 0 581 581.55153" width="40px"><g transform="matrix(0.762267 0 0 0.762267 25.3186 69.1271)"><path d="m107.15625 0c-37.46875.0429688-67.832031 30.40625-67.875 67.875v325.101562c-28.816406 23.519532-43.148438 60.460938-37.734375 97.261719 8.230469 58.328125 62.191406 98.9375 120.515625 90.703125 52.707031-7.441406 91.859375-52.601562 91.75-105.828125.097656-31.824219-14.148438-61.992187-38.785156-82.136719v-325.101562c-.039063-37.46875-30.402344-67.8320312-67.871094-67.875zm87.265625 475.113281c.0625 48.191407-38.953125 87.316407-87.148437 87.378907-48.195313.066406-87.320313-38.953126-87.382813-87.148438-.035156-27.507812 12.898437-53.421875 34.90625-69.925781 2.441406-1.832031 3.878906-4.707031 3.878906-7.757813v-29.207031h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089843h19.390625v-19.390626h-19.390625v-29.089843h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-29.089844h19.390625v-19.390625h-19.390625v-38.785156c0-26.777344 21.703125-48.480469 48.480469-48.480469 26.773438 0 48.480469 21.703125 48.480469 48.480469v329.804688c0 3.050781 1.4375 5.925781 3.878906 7.753906 22.019531 16.382812 34.96875 42.234375 34.90625 69.679687zm0 0" data-original="#000000" class="active-path" fill="#000000"/><path d="m116.851562 427.601562v-340.335937h-19.390624v340.335937c-26.234376 5.355469-43.160157 30.960938-37.804688 57.195313s30.960938 43.160156 57.195312 37.804687c26.234376-5.355468 43.160157-30.960937 37.804688-57.195312-3.886719-19.042969-18.765625-33.917969-37.804688-37.804688zm-9.695312 76.597657c-16.066406 0-29.089844-13.023438-29.089844-29.085938 0-16.066406 13.023438-29.089843 29.089844-29.089843s29.089844 13.023437 29.089844 29.089843c0 16.0625-13.023438 29.085938-29.089844 29.085938zm0 0" data-original="#000000" class="active-path" fill="#000000"/></g> </svg>
+                <span class='termometer'>
+                ${returnTermometerIcon(currentHour)}
                 </span>
             <span class='temperature'>${forecast.Temperature.Value} ${forecast.Temperature.Unit}<sup>o</sup></span>
-            <img src='https://developer.accuweather.com/sites/default/files/${forecast.WeatherIcon< 10 ? `0${forecast.WeatherIcon}` : forecast.WeatherIcon}-s.png'
+            <img src='https://developer.accuweather.com/sites/default/files/${forecast.WeatherIcon < 10 ? `0${forecast.WeatherIcon}` : forecast.WeatherIcon}-s.png'
              alt='${forecast.IconPhrase}' />
         </div>
         </div>
@@ -259,6 +337,7 @@ const createTwelveHoursForecast = (data) => {
     contentSectionElement.appendChild(twelveHoursForecastElement);
     twelveHoursForecastElement.addEventListener('click', event => {
         twelveHoursForecastElement.classList.toggle('open');
+        backgroundWrapperElement.classList.toggle('visibility')
     })
 }
 
@@ -294,7 +373,7 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
 const apiGetTwelveHoursForecast = (currentLocation) => {
     return new Promise(async (resolve) => {
         const { Key } = currentLocation;
-        const response = await fetch(`http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
+        const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
         const data = await response.json();
         createTwelveHoursForecast(data);
         resolve();
@@ -339,12 +418,6 @@ window.onload = () => {
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)
     }
-    switchButtons[0].setAttribute('disabled', true)
     addEventListenerForButtons(switchButtons);
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }
-
-burgerContainerElement.addEventListener('click', event => {
-    event.currentTarget.classList.toggle('change');
-    menuElement.classList.toggle('open')
-})

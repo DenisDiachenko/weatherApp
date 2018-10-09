@@ -1,10 +1,16 @@
 //keys for api request
 
 // denis
-const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
 //const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+
+//valeri
+// const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+
+//valeri
+const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 
@@ -16,11 +22,59 @@ const menuElement = document.querySelector('.menu');
 const backgroundWrapperElement = document.querySelector('.background-wrapper');
 
 const sliderNavElement = document.querySelector('.slider-nav');
-
 const prev = document.querySelector('.prev');
 const next = document.querySelector('.next');
 
 const searchIconContainerElement = document.querySelector('.search-icon');
+const serchInputElement = document.getElementById('seacrh-location-input');
+const autocompleteResultElement = document.querySelector('.autocomplete-field');
+
+const checkAdministrativeAreaEnd = (locationString) => {
+    if ((locationString.indexOf(' ') === -1) && (locationString.indexOf('ка', locationString.length - 2) !== -1)) {
+        return `${locationString} область,`
+    } else {
+        return `${locationString},`;
+    }
+}
+
+serchInputElement.addEventListener('input', async (event) => {
+    if (event.target.value) {
+        const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${event.target.value}&language=${localLang}`)
+        const data = await response.json();
+        const resultsArr = [...data];
+        autocompleteResultElement.innerHTML = data.map(item =>
+            `<div class ='result-container' data-local=${item.Key}>
+                ${item.LocalizedName}, 
+                ${checkAdministrativeAreaEnd(item.AdministrativeArea.LocalizedName)} 
+                ${item.Country.LocalizedName}
+            </div>`
+        ).join('');
+
+        const allResultContainers = document.querySelectorAll('.result-container');
+        console.log(allResultContainers);
+        if (allResultContainers.length) {
+            for (let container of allResultContainers) {
+                container.addEventListener('click', event => {
+                    const targetKey = parseInt(event.target.dataset.local);
+                    const targetElement = resultsArr.filter(item => parseInt(item.Key) === targetKey);
+                    const apiRequestArr = [
+                        apiGetCurrentConditionsRequest,
+                        apiGetFiveDaysForecastRequest,
+                        apiGetTwelveHoursForecast,
+                    ]
+                    Promise.all(apiRequestArr.map(func => func(targetElement[0])));
+                    for (let container of allResultContainers) {
+                        container.remove();
+                    }
+                    console.log(serchInputElement.value);
+                    serchInputElement.value = '';
+                    menuElement.classList.toggle('open');
+                    searchIconContainerElement.classList.toggle('moving');
+                });
+            };
+        };
+    };
+});
 
 const addEventListenerForButtons = (switchButtons) => {
     for (const button of switchButtons) {
@@ -45,6 +99,7 @@ searchIconContainerElement.addEventListener('click', event => {
     menuElement.classList.toggle('open');
     searchIconContainerElement.classList.toggle('moving');
 })
+
 
 
 const returnTermometerIcon = (time) =>
@@ -364,7 +419,6 @@ window.onload = () => {
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)
     }
-    switchButtons[0].setAttribute('disabled', true)
     addEventListenerForButtons(switchButtons);
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }

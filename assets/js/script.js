@@ -51,7 +51,6 @@ serchInputElement.addEventListener('input', async (event) => {
         ).join('');
 
         const allResultContainers = document.querySelectorAll('.result-container');
-        console.log(allResultContainers);
         if (allResultContainers.length) {
             for (let container of allResultContainers) {
                 container.addEventListener('click', event => {
@@ -66,7 +65,6 @@ serchInputElement.addEventListener('input', async (event) => {
                     for (let container of allResultContainers) {
                         container.remove();
                     }
-                    console.log(serchInputElement.value);
                     serchInputElement.value = '';
                     menuElement.classList.toggle('open');
                     searchIconContainerElement.classList.toggle('moving');

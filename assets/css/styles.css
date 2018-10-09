@@ -31,6 +31,19 @@ body {
 
 .menu.open > div {
   display: flex;
+  flex-direction: column;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+.menu.open .result-container {
+  margin: 10px 0 10px 0;
+}
+
+.menu.open .input-container > input{
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .search-icon {
@@ -147,7 +160,7 @@ body {
 }
 
 .daily-forecast-block.open {
-  height: 100vh;
+  height: 98vh;
 }
 .background-wrapper {
   background-image: url('../img/cloud-font.jpg');

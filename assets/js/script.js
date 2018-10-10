@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis
-const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
 // const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
@@ -56,17 +56,22 @@ serchInputElement.addEventListener('input', async (event) => {
         if (allResultContainers.length) {
             for (let container of allResultContainers) {
                 container.addEventListener('click', event => {
+                    globalWeatherData = [];
+                    console.log(globalWeatherData);
                     const targetKey = parseInt(event.target.dataset.local);
                     const targetElement = resultsArr.filter(item => parseInt(item.Key) === targetKey);
                     const apiRequestArr = [
                         apiGetCurrentConditionsRequest,
-                        apiGetFiveDaysForecastRequest,
                         apiGetTwelveHoursForecast,
+                        apiGetFiveDaysForecastRequest
                     ]
-                    Promise.all(apiRequestArr.map(func => func(targetElement[0])));
+                    Promise.all(apiRequestArr.map(func => func(targetElement[0])))
+                        .then(response => globalWeatherData = [...response])
+                        .then(globalWeatherData => createDocumentMarkup(globalWeatherData))
                     for (let container of allResultContainers) {
                         container.remove();
                     }
+                    console.log(globalWeatherData);
                     serchInputElement.value = '';
                     menuElement.classList.toggle('open');
                     searchIconContainerElement.classList.toggle('moving');
@@ -354,6 +359,34 @@ const createFiveDaysForecast = (dailyForecasts) => {
     sliderContainerElement.appendChild(fiveDaysForecastBlock);
 }
 
+const createDocumentMarkup = (globalWeatherData) => {
+    const [currentData, twelveHoursForecast, fiveDaysForecast] = globalWeatherData;
+    const createElementsMarkup = (currentData, twelveHoursForecast, fiveDaysForecast) =>
+        `
+                <nav class='navbar'>
+                    ${createCurrentWeather(currentData)}
+                    <span class='daily switch-button'>Сьогодні</span>
+                    <span class="separator"> | </span>
+                    <span class='five-days switch-button'>П'ять днів</span>
+                </nav>
+                <div class='background-wrapper'></div>
+                <div class="slider-nav">
+                    <span class='prev'>
+                        <img src="assets/img/arrow-pointing-to-left.svg" alt="prev-slide" />
+                    </span>
+                    <span class='next'>
+                        <img src="assets/img/arrow-pointing-to-right.svg" alt="next-slide" />
+                    </span>
+                </div>
+                <div class='slider-container'>
+
+                </div>
+    `
+    createCurrentWeather(currentData);
+    createTwelveHoursForecast(twelveHoursForecast);
+    createFiveDaysForecast(fiveDaysForecast);
+}
+
 const apiGetCurrentConditionsRequest = (currentLocation) => {
     return new Promise(async (resolve) => {
         const { Key } = currentLocation
@@ -367,7 +400,6 @@ const apiGetCurrentConditionsRequest = (currentLocation) => {
             ...currentArea,
             ...data[0]
         }
-        createCurrentWeather(currentData);
         resolve(currentData);
     })
 }
@@ -377,7 +409,6 @@ const apiGetTwelveHoursForecast = (currentLocation) => {
         const { Key } = currentLocation;
         const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${Key}?apikey=${apiKey}&language=${localLang}&details=false&metric=true`)
         const data = await response.json();
-        createTwelveHoursForecast(data);
         resolve(data);
     })
 }
@@ -387,7 +418,6 @@ const apiGetFiveDaysForecastRequest = (currentLocation) => {
         const { Key } = currentLocation;
         const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${Key}?apikey=${apiKey}&language=${localLang}&details=true&metric=true`)
         const data = await response.json();
-        createFiveDaysForecast(data);
         resolve(data);
     })
 }
@@ -400,7 +430,7 @@ const apiGetGlobalWeatherDataRequest = async (userPosition) => {
         const currentConditionObject = await apiGetCurrentConditionsRequest(data[0]);
         const twelveHoursForecastObject = await apiGetTwelveHoursForecast(data[0]);
         const fiveDaysForecastObject = await apiGetFiveDaysForecastRequest(data[0]);
-        const result = [ currentConditionObject, twelveHoursForecastObject, fiveDaysForecastObject ]
+        const result = [currentConditionObject, twelveHoursForecastObject, fiveDaysForecastObject]
         resolve(result);
     })
 }
@@ -416,7 +446,7 @@ window.onload = () => {
         userPosition = position;
         const dataObjects = await apiGetGlobalWeatherDataRequest(userPosition);
         globalWeatherData = [...dataObjects];
-        console.log(globalWeatherData)
+        createDocumentMarkup(globalWeatherData);
         const sliderWrapperElement = document.querySelector('.slider-wrapper');
         createSlidesAction(sliderWrapperElement);
     };

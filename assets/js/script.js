@@ -4,30 +4,23 @@
 //const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
-// const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+//const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
-//const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
+const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 
-const sliderContainerElement = document.querySelector('.slider-container');
-const contentSectionElement = document.querySelector('.content-section');
-const burgerContainerElement = document.querySelector('.burger-continer');
-const switchButtons = document.querySelectorAll('.switch-button');
+const mainContainer = document.querySelector('#main');
 const menuElement = document.querySelector('.menu');
-const backgroundWrapperElement = document.querySelector('.background-wrapper');
-
-const sliderNavElement = document.querySelector('.slider-nav');
-const prev = document.querySelector('.prev');
-const next = document.querySelector('.next');
-
 const searchIconContainerElement = document.querySelector('.search-icon');
 const serchInputElement = document.getElementById('seacrh-location-input');
 const autocompleteResultElement = document.querySelector('.autocomplete-field');
+const currentLocationIcon = document.querySelector('.location-icon');
+const closeMenuIcon = document.querySelector('.close-icon');
 
 let globalWeatherData = [];
 
@@ -38,6 +31,20 @@ const checkAdministrativeAreaEnd = (locationString) => {
         return `${locationString},`;
     }
 }
+
+currentLocationIcon.addEventListener('click', event => {
+    const contentSectionElement = document.querySelector('.content-section');
+    contentSectionElement.remove();
+    apiGetCurrentGeoPosition();
+})
+
+closeMenuIcon.addEventListener('click', event => {
+    menuElement.classList.remove('open');
+})
+
+searchIconContainerElement.addEventListener('click', event => {
+        menuElement.classList.add('open');
+    })
 
 serchInputElement.addEventListener('input', async (event) => {
     if (event.target.value) {
@@ -57,7 +64,8 @@ serchInputElement.addEventListener('input', async (event) => {
             for (let container of allResultContainers) {
                 container.addEventListener('click', event => {
                     globalWeatherData = [];
-                    console.log(globalWeatherData);
+                    const contentSectionElement = document.querySelector('.content-section');
+                    contentSectionElement.remove();
                     const targetKey = parseInt(event.target.dataset.local);
                     const targetElement = resultsArr.filter(item => parseInt(item.Key) === targetKey);
                     const apiRequestArr = [
@@ -67,21 +75,54 @@ serchInputElement.addEventListener('input', async (event) => {
                     ]
                     Promise.all(apiRequestArr.map(func => func(targetElement[0])))
                         .then(response => globalWeatherData = [...response])
-                        .then(globalWeatherData => createDocumentMarkup(globalWeatherData))
+                        .then(globalWeatherData => createWeather(globalWeatherData))
                     for (let container of allResultContainers) {
                         container.remove();
                     }
-                    console.log(globalWeatherData);
                     serchInputElement.value = '';
                     menuElement.classList.toggle('open');
-                    searchIconContainerElement.classList.toggle('moving');
                 });
             };
         };
     };
 });
 
-const addEventListenerForButtons = (switchButtons) => {
+const setupBackgroundWrapperElement = (backgroundWrapperElement) => {
+    const date = new Date();
+
+    const hours = date.getHours();
+
+    backgroundWrapperElement.classList.remove('night');
+    if (hours > 5 && hours < 11) {
+        document.body.style.backgroundImage = "url('assets/img/sunrise.jpg')";
+        backgroundWrapperElement.style.backgroundImage = "url('assets/img/cloud-font.jpg')"
+    }
+    if (hours > 10 && hours < 18) {
+        document.body.style.backgroundImage = "url('assets/img/day.jpg')";
+    }
+    if (hours > 17 && hours < 20) {
+        document.body.style.backgroundImage = "url('assets/img/sunset.png')";
+        document.body.style.backgroundSize = 'cover';
+    }
+    if ((hours > 19 && hours < 24) || (hours >= 0 && hours < 5)) {
+        document.body.style.backgroundImage = "url('assets/img/night.jpg')";
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.color = 'wheat';
+        backgroundWrapperElement.classList.add('night');
+    }
+}
+
+const addEventListenersForElements = (switchButtons, sliderNavElement, twelveHoursForecastElement, backgroundWrapperElement) => {
+
+    addEventListenerForButtons(switchButtons, sliderNavElement);
+
+    twelveHoursForecastElement.addEventListener('click', event => {
+        twelveHoursForecastElement.classList.toggle('open');
+        backgroundWrapperElement.classList.toggle('visibility')
+    })
+}
+
+const addEventListenerForButtons = (switchButtons, sliderNavElement) => {
     for (const button of switchButtons) {
         button.addEventListener('click', event => {
             const targetClass = event.target.className;
@@ -99,13 +140,6 @@ const addEventListenerForButtons = (switchButtons) => {
         })
     }
 }
-
-searchIconContainerElement.addEventListener('click', event => {
-    menuElement.classList.toggle('open');
-    searchIconContainerElement.classList.toggle('moving');
-})
-
-
 
 const returnTermometerIcon = (time) =>
     `
@@ -130,6 +164,8 @@ const createSlidesAction = (sliderWrapper) => {
     let touchEndX = 0;
 
     const slidesElements = sliderWrapper.children;
+    const prev = document.querySelector('.prev');
+    const next = document.querySelector('.next');
 
     const styles = window.getComputedStyle(slidesElements[i], null);
     const marginRigth = styles.marginRight.slice(0, styles.marginRight.indexOf('p'));
@@ -256,28 +292,7 @@ const createCurrentWeather = (currentData) => {
                 </div>
             </div>
     `
-    const currentConditionsBlock = document.createElement('div');
-    currentConditionsBlock.classList.add('current-conditions-block');
-    backgroundWrapperElement.classList.remove('night');
-    if (currentLocalDate.hours > 5 && currentLocalDate.hours < 11) {
-        document.body.style.backgroundImage = "url('assets/img/sunrise.jpg')";
-        backgroundWrapperElement.style.backgroundImage = "url('assets/img/cloud-font.jpg')"
-    }
-    if (currentLocalDate.hours > 10 && currentLocalDate.hours < 18) {
-        document.body.style.backgroundImage = "url('assets/img/day.jpg')";
-    }
-    if (currentLocalDate.hours > 17 && currentLocalDate.hours < 20) {
-        document.body.style.backgroundImage = "url('assets/img/sunset.png')";
-        document.body.style.backgroundSize = 'cover';
-    }
-    if ((currentLocalDate.hours > 19 && currentLocalDate.hours < 24) || (currentLocalDate.hours >= 0 && currentLocalDate.hours < 5)) {
-        document.body.style.backgroundImage = "url('assets/img/night.jpg')";
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.color = 'wheat';
-        backgroundWrapperElement.classList.add('night');
-    }
-    currentConditionsBlock.innerHTML = createCurrentWeatherMarkup(currentData)
-    contentSectionElement.insertBefore(currentConditionsBlock, contentSectionElement.firstChild);
+    return createCurrentWeatherMarkup(currentData)
 }
 
 const createDailyForecastsMarkup = (dailyForecasts) =>
@@ -338,35 +353,22 @@ const createTwelveHoursForecast = (data) => {
         </div>
         </div>
         `
-    const twelveHoursForecastElement = document.createElement('div');
-    twelveHoursForecastElement.classList.add('daily-forecast-block', 'weather-block');
-    twelveHoursForecastElement.innerHTML = data.map(createMarkup).join('');
-    contentSectionElement.appendChild(twelveHoursForecastElement);
-    twelveHoursForecastElement.addEventListener('click', event => {
-        twelveHoursForecastElement.classList.toggle('open');
-        backgroundWrapperElement.classList.toggle('visibility')
-    })
+    return data.map(createMarkup).join('');
 }
 
 
-const createFiveDaysForecast = (dailyForecasts) => {
-    const fiveDaysForecastBlock = document.createElement('div');
-    const sliderWrapperElement = document.createElement('div');
-    sliderWrapperElement.classList.add('slider-wrapper');
-    fiveDaysForecastBlock.classList.add('five-days-forecast-block', 'weather-block');
-    sliderWrapperElement.innerHTML = dailyForecasts.DailyForecasts.map(createDailyForecastsMarkup).join('');
-    fiveDaysForecastBlock.appendChild(sliderWrapperElement);
-    sliderContainerElement.appendChild(fiveDaysForecastBlock);
-}
+const createFiveDaysForecast = (dailyForecasts) => dailyForecasts.DailyForecasts.map(createDailyForecastsMarkup).join('');
 
 const createDocumentMarkup = (globalWeatherData) => {
     const [currentData, twelveHoursForecast, fiveDaysForecast] = globalWeatherData;
     const createElementsMarkup = (currentData, twelveHoursForecast, fiveDaysForecast) =>
         `
-                <nav class='navbar'>
+                 <div class='current-conditions-block'>
                     ${createCurrentWeather(currentData)}
+                 </div>
+                <nav class='navbar'>
                     <span class='daily switch-button'>Сьогодні</span>
-                    <span class="separator"> | </span>
+                    <span class='separator'> | </span>
                     <span class='five-days switch-button'>П'ять днів</span>
                 </nav>
                 <div class='background-wrapper'></div>
@@ -379,12 +381,39 @@ const createDocumentMarkup = (globalWeatherData) => {
                     </span>
                 </div>
                 <div class='slider-container'>
-
+                    <div class='five-days-forecast-block weather-block'>
+                        <div class='slider-wrapper'>
+                            ${createFiveDaysForecast(fiveDaysForecast)}
+                        </div>
+                    </div>
+                </div>
+                <div class='daily-forecast-block weather-block'>
+                    ${createTwelveHoursForecast(twelveHoursForecast)}
                 </div>
     `
-    createCurrentWeather(currentData);
-    createTwelveHoursForecast(twelveHoursForecast);
-    createFiveDaysForecast(fiveDaysForecast);
+    const contentSectionElement = document.createElement('div');
+    contentSectionElement.classList.add('content-section');
+    contentSectionElement.innerHTML = createElementsMarkup(currentData, twelveHoursForecast, fiveDaysForecast);
+    mainContainer.appendChild(contentSectionElement);
+}
+
+const createWeather = (globalWeatherData) => {
+    createDocumentMarkup(globalWeatherData);
+
+    const sliderWrapperElement = document.querySelector('.slider-wrapper');
+    const switchButtons = document.querySelectorAll('.switch-button');
+    const sliderNavElement = document.querySelector('.slider-nav');
+    const twelveHoursForecastElement = document.querySelector('.daily-forecast-block');
+    const backgroundWrapperElement = document.querySelector('.background-wrapper');
+
+    createSlidesAction(sliderWrapperElement);
+    addEventListenersForElements(
+        switchButtons,
+        sliderNavElement,
+        twelveHoursForecastElement,
+        backgroundWrapperElement
+    );
+    setupBackgroundWrapperElement(backgroundWrapperElement);
 }
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
@@ -435,8 +464,7 @@ const apiGetGlobalWeatherDataRequest = async (userPosition) => {
     })
 }
 
-
-window.onload = () => {
+const apiGetCurrentGeoPosition = () => {
     let userPosition;
     const geoOptions = {
         maximumAge: 5 * 60 * 1000,
@@ -446,13 +474,14 @@ window.onload = () => {
         userPosition = position;
         const dataObjects = await apiGetGlobalWeatherDataRequest(userPosition);
         globalWeatherData = [...dataObjects];
-        createDocumentMarkup(globalWeatherData);
-        const sliderWrapperElement = document.querySelector('.slider-wrapper');
-        createSlidesAction(sliderWrapperElement);
+        createWeather(globalWeatherData);
     };
     const geoError = (error) => {
         console.log('Error occurred. Error code: ' + error.code)
     }
-    addEventListenerForButtons(switchButtons);
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
+}
+
+window.onload = () => {
+    apiGetCurrentGeoPosition();
 }

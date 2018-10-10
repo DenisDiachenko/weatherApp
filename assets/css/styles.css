@@ -32,8 +32,18 @@ body {
 .menu.open > div {
   display: flex;
   flex-direction: column;
-  padding: 40px 20px;
+  padding: 10px 20px;
   font-size: 16px;
+}
+
+.menu.open .close-icon {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.menu.open .close-icon > img {
+  width: 30px;
+  height: 30px;
 }
 
 .menu.open .result-container {
@@ -51,7 +61,6 @@ body {
   top: 0;
   left: 0;
   transition: 0.4s;
-  z-index: 2;
 }
 
 .search-icon.moving {
@@ -59,8 +68,21 @@ body {
 }
 
 .search-icon > img {
-  width: 20px;
+  width: 30px;
   margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.location-icon {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.location-icon > img {
+  width: 40px;
+  height: 40px;
+  margin-top: 5px;
   margin-left: 10px;
   margin-right: 10px;
 }

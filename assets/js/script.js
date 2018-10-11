@@ -33,7 +33,7 @@ const checkAdministrativeAreaEnd = (locationString) => {
 }
 
 const autocompleteSearchCityAndWeatherForecastDisplay = async (event) => {
-    if (event && event.target.value && event.keyCode === 13) {
+    if (event && event.target.value) {
         const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${event.target.value}&language=${localLang}`)
         const data = await response.json();
         const resultsArr = [...data];
@@ -89,9 +89,9 @@ searchIconContainerElement.addEventListener('click', event => {
 
 serchInputElement.addEventListener('input', autocompleteSearchCityAndWeatherForecastDisplay);
 
-serchInputElement.addEventListener('change', autocompleteSearchCityAndWeatherForecastDisplay);
+// serchInputElement.addEventListener('change', autocompleteSearchCityAndWeatherForecastDisplay);
 
-serchInputElement.addEventListener('keydown', autocompleteSearchCityAndWeatherForecastDisplay);
+// serchInputElement.addEventListener('keydown', autocompleteSearchCityAndWeatherForecastDisplay);
 
 
 const setupBackgroundWrapperElement = (backgroundWrapperElement) => {

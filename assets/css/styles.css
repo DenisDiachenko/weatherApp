@@ -188,7 +188,7 @@ body {
 }
 
 .daily-forecast-block.open {
-  height: 90%;
+  height: 100%;
 }
 .background-wrapper {
   background-image: url('../img/cloud-font.jpg');

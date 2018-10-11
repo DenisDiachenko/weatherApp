@@ -22,6 +22,8 @@ const autocompleteResultElement = document.querySelector('.autocomplete-field');
 const currentLocationIcon = document.querySelector('.location-icon');
 const closeMenuIcon = document.querySelector('.close-icon');
 
+const loadingDiv = document.getElementById('loading');
+
 let globalWeatherData = [];
 
 const checkAdministrativeAreaEnd = (locationString) => {
@@ -124,6 +126,7 @@ const setupBackgroundWrapperElement = (backgroundWrapperElement) => {
         document.body.style.color = 'wheat';
         backgroundWrapperElement.classList.add('night');
     }
+    hideSpinner();
 }
 
 const addEventListenersForElements = (switchButtons, sliderNavElement, twelveHoursForecastElement, backgroundWrapperElement) => {
@@ -478,6 +481,17 @@ const apiGetGlobalWeatherDataRequest = async (userPosition) => {
     })
 }
 
+
+const showSpinner = () => {
+    loadingDiv.style.visibility = 'visible';
+}
+
+const hideSpinner = () => {
+    searchIconContainerElement.style.display = 'block';
+    currentLocationIcon.style.display = 'block'
+    loadingDiv.style.visibility = 'hidden';
+}
+
 const apiGetCurrentGeoPosition = () => {
     let userPosition;
     const geoOptions = {
@@ -495,7 +509,5 @@ const apiGetCurrentGeoPosition = () => {
     }
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }
-
-window.onload = () => {
-    apiGetCurrentGeoPosition();
-}
+showSpinner();
+apiGetCurrentGeoPosition();

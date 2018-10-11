@@ -32,22 +32,8 @@ const checkAdministrativeAreaEnd = (locationString) => {
     }
 }
 
-currentLocationIcon.addEventListener('click', event => {
-    const contentSectionElement = document.querySelector('.content-section');
-    contentSectionElement.remove();
-    apiGetCurrentGeoPosition();
-})
-
-closeMenuIcon.addEventListener('click', event => {
-    menuElement.classList.remove('open');
-})
-
-searchIconContainerElement.addEventListener('click', event => {
-        menuElement.classList.add('open');
-    })
-
-serchInputElement.addEventListener('change', async (event) => {
-    if (event.target.value) {
+const autocompleteSearchCityAndWeatherForecastDisplay = async (event) => {
+    if (event && event.target.value) {
         const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${event.target.value}&language=${localLang}`)
         const data = await response.json();
         const resultsArr = [...data];
@@ -85,7 +71,26 @@ serchInputElement.addEventListener('change', async (event) => {
             };
         };
     };
-});
+};
+
+currentLocationIcon.addEventListener('click', event => {
+    const contentSectionElement = document.querySelector('.content-section');
+    contentSectionElement.remove();
+    apiGetCurrentGeoPosition();
+})
+
+closeMenuIcon.addEventListener('click', event => {
+    menuElement.classList.remove('open');
+})
+
+searchIconContainerElement.addEventListener('click', event => {
+    menuElement.classList.add('open');
+})
+
+serchInputElement.addEventListener('input', autocompleteSearchCityAndWeatherForecastDisplay);
+
+serchInputElement.addEventListener('change', autocompleteSearchCityAndWeatherForecastDisplay);
+
 
 const setupBackgroundWrapperElement = (backgroundWrapperElement) => {
     const date = new Date();

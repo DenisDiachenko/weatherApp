@@ -181,7 +181,7 @@ body {
   height: 40%;
   width: 100%;
   bottom: 0px;
-  padding: 15px;
+  padding: 15px 15px 15px 15px;
   overflow: hidden;
   transition: all 0.7s;
   box-sizing: border-box;
@@ -189,6 +189,7 @@ body {
 
 .daily-forecast-block.open {
   height: 100%;
+  padding: 0 15px 0px 15px;
 }
 .background-wrapper {
   background-image: url('../img/cloud-font.jpg');

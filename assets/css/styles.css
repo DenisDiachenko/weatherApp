@@ -32,18 +32,23 @@ body {
 .menu.open > div {
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
+  padding: 50px 20px;
   font-size: 16px;
 }
 
 .menu.open .close-icon {
-  flex-direction: row;
-  justify-content: flex-end;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
 }
 
 .menu.open .close-icon > img {
   width: 30px;
   height: 30px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .menu.open .result-container {

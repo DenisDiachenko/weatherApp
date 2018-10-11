@@ -1,7 +1,7 @@
 //keys for api request
 
 // denis
-//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
 //const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
@@ -10,7 +10,7 @@
 //const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
-const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
+//const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 
@@ -46,7 +46,7 @@ searchIconContainerElement.addEventListener('click', event => {
         menuElement.classList.add('open');
     })
 
-serchInputElement.addEventListener('input', async (event) => {
+serchInputElement.addEventListener('change', async (event) => {
     if (event.target.value) {
         const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${event.target.value}&language=${localLang}`)
         const data = await response.json();

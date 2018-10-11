@@ -1,10 +1,10 @@
 //keys for api request
 
 // denis
-const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
+//const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
 //const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
@@ -80,8 +80,15 @@ currentLocationIcon.addEventListener('click', event => {
 })
 
 closeMenuIcon.addEventListener('click', event => {
-    menuElement.classList.remove('open');
-})
+    const allResultContainers = document.querySelectorAll('.result-container');
+    for (let container of allResultContainers) {
+        container.remove();
+    }
+    serchInputElement.value = '';
+    menuElement.classList.toggle('open');
+
+});
+
 
 searchIconContainerElement.addEventListener('click', event => {
     menuElement.classList.add('open');

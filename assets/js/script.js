@@ -4,10 +4,10 @@
 //const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
-const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+//const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
 //const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
@@ -432,23 +432,18 @@ const createWeather = (globalWeatherData) => {
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
     return new Promise(async (resolve) => {
-        try {
-            const { Key } = currentLocation
-            const currentArea = {
-                curentCountry: currentLocation.Country.LocalizedName,
-                currentCity: currentLocation.LocalizedName
-            };
-            const response = await fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
-            const data = await response.json();
-            const currentData = {
-                ...currentArea,
-                ...data[0]
-            }
-            resolve(currentData);
+        const { Key } = currentLocation
+        const currentArea = {
+            curentCountry: currentLocation.Country.LocalizedName,
+            currentCity: currentLocation.LocalizedName
+        };
+        const response = await fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+        const data = await response.json();
+        const currentData = {
+            ...currentArea,
+            ...data[0]
         }
-        catch (error) {
-            console.log(error); 
-        }
+        resolve(currentData);
     })
 }
 
@@ -511,29 +506,29 @@ const apiGetCurrentGeoPosition = () => {
         const dataObjects = await apiGetGlobalWeatherDataRequest(userPosition);
         globalWeatherData = [...dataObjects];
         createWeather(globalWeatherData);
-    };
-    const geoError = (error) => {
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('message');
-        switch (error.code) {
-            case 0:
-                errorMessage.innerHTML = '<span>Oops, something being wrong. Please, try again!</span>';
-                break;
-            case 1:
-                errorMessage.innerHTML = '<span>Access is denied!</span>';
-                break;
-            case 2:
-                errorMessage.innerHTML = '<span>Unable to locate device. Please, try again!</span>';
-                break;
-            case 3:
-                errorMessage.innerHTML = '<span>Waiting limit exceeded. Please, try again!</span>';
-                break;
-        }
-        errorMessageContainer.appendChild(errorMessage);
-        hideSpinner(error);
+        const geoError = (error) => {
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('message');
+            switch (error.code) {
+                case 0:
+                    errorMessage.innerHTML = '<span>Oops, something being wrong. Please, try again!</span>';
+                    break;
+                case 1:
+                    errorMessage.innerHTML = '<span>Access is denied!</span>';
+                    break;
+                case 2:
+                    errorMessage.innerHTML = '<span>Unable to locate device. Please, try again!</span>';
+                    break;
+                case 3:
+                    errorMessage.innerHTML = '<span>Waiting limit exceeded. Please, try again!</span>';
+                    break;
+            }
+            errorMessageContainer.appendChild(errorMessage);
+            hideSpinner(error);
 
+        }
+        navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
     }
-    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }
-showSpinner();
-apiGetCurrentGeoPosition();
+    showSpinner();
+    apiGetCurrentGeoPosition();

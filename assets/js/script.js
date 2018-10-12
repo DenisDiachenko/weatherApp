@@ -506,29 +506,30 @@ const apiGetCurrentGeoPosition = () => {
         const dataObjects = await apiGetGlobalWeatherDataRequest(userPosition);
         globalWeatherData = [...dataObjects];
         createWeather(globalWeatherData);
-        const geoError = (error) => {
-            const errorMessage = document.createElement('div');
-            errorMessage.classList.add('message');
-            switch (error.code) {
-                case 0:
-                    errorMessage.innerHTML = '<span>Oops, something being wrong. Please, try again!</span>';
-                    break;
-                case 1:
-                    errorMessage.innerHTML = '<span>Access is denied!</span>';
-                    break;
-                case 2:
-                    errorMessage.innerHTML = '<span>Unable to locate device. Please, try again!</span>';
-                    break;
-                case 3:
-                    errorMessage.innerHTML = '<span>Waiting limit exceeded. Please, try again!</span>';
-                    break;
-            }
-            errorMessageContainer.appendChild(errorMessage);
-            hideSpinner(error);
-
-        }
-        navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
     }
+    const geoError = (error) => {
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('message');
+        switch (error.code) {
+            case 0:
+                errorMessage.innerHTML = '<span>Oops, something being wrong. Please, try again!</span>';
+                break;
+            case 1:
+                errorMessage.innerHTML = '<span>Access is denied!</span>';
+                break;
+            case 2:
+                errorMessage.innerHTML = '<span>Unable to locate device. Please, try again!</span>';
+                break;
+            case 3:
+                errorMessage.innerHTML = '<span>Waiting limit exceeded. Please, try again!</span>';
+                break;
+        }
+        errorMessageContainer.appendChild(errorMessage);
+        hideSpinner(error);
+
+    }
+    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }
-    showSpinner();
-    apiGetCurrentGeoPosition();
+
+showSpinner();
+apiGetCurrentGeoPosition();

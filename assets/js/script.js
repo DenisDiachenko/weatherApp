@@ -10,7 +10,7 @@ const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 //const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
-const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
+//const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
 
 const localLang = `uk-ua`;
 

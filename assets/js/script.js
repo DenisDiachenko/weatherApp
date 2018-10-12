@@ -4,10 +4,10 @@
 //const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
-const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+//const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
 //const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';
@@ -21,6 +21,7 @@ const serchInputElement = document.getElementById('seacrh-location-input');
 const autocompleteResultElement = document.querySelector('.autocomplete-field');
 const currentLocationIcon = document.querySelector('.location-icon');
 const closeMenuIcon = document.querySelector('.close-icon');
+const errorMessageContainer = document.querySelector('.error-message');
 
 const loadingDiv = document.getElementById('loading');
 
@@ -97,11 +98,6 @@ searchIconContainerElement.addEventListener('click', event => {
 })
 
 serchInputElement.addEventListener('input', autocompleteSearchCityAndWeatherForecastDisplay);
-
-// serchInputElement.addEventListener('change', autocompleteSearchCityAndWeatherForecastDisplay);
-
-// serchInputElement.addEventListener('keydown', autocompleteSearchCityAndWeatherForecastDisplay);
-
 
 const setupBackgroundWrapperElement = (backgroundWrapperElement) => {
     const date = new Date();
@@ -424,6 +420,7 @@ const createWeather = (globalWeatherData) => {
     const backgroundWrapperElement = document.querySelector('.background-wrapper');
 
     createSlidesAction(sliderWrapperElement);
+
     addEventListenersForElements(
         switchButtons,
         sliderNavElement,
@@ -486,10 +483,16 @@ const showSpinner = () => {
     loadingDiv.style.visibility = 'visible';
 }
 
-const hideSpinner = () => {
-    searchIconContainerElement.style.display = 'block';
-    currentLocationIcon.style.display = 'block'
-    loadingDiv.style.visibility = 'hidden';
+const hideSpinner = (error) => {
+    if (error) {
+        loadingDiv.style.visibility = 'hidden';
+        errorMessageContainer.style.display = 'block';
+    }
+    else {
+        searchIconContainerElement.style.display = 'block';
+        currentLocationIcon.style.display = 'block'
+        loadingDiv.style.visibility = 'hidden';
+    }
 }
 
 const apiGetCurrentGeoPosition = () => {
@@ -505,7 +508,25 @@ const apiGetCurrentGeoPosition = () => {
         createWeather(globalWeatherData);
     };
     const geoError = (error) => {
-        console.log('Error occurred. Error code: ' + error.code)
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('message');
+        switch (error.code) {
+            case 0:
+                errorMessage.innerHTML = '<span>Oops, something being wrong. Please, try again!</span>';
+                break;
+            case 1:
+                errorMessage.innerHTML = '<span>Access is denied!</span>';
+                break;
+            case 2:
+                errorMessage.innerHTML = '<span>Unable to locate device. Please, try again!</span>';
+                break;
+            case 3:
+                errorMessage.innerHTML = '<span>Waiting limit exceeded. Please, try again!</span>';
+                break;
+        }
+        errorMessageContainer.appendChild(errorMessage);
+        hideSpinner(error);
+
     }
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
 }

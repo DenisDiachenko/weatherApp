@@ -432,18 +432,23 @@ const createWeather = (globalWeatherData) => {
 
 const apiGetCurrentConditionsRequest = (currentLocation) => {
     return new Promise(async (resolve) => {
-        const { Key } = currentLocation
-        const currentArea = {
-            curentCountry: currentLocation.Country.LocalizedName,
-            currentCity: currentLocation.LocalizedName
-        };
-        const response = await fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
-        const data = await response.json();
-        const currentData = {
-            ...currentArea,
-            ...data[0]
+        try {
+            const { Key } = currentLocation
+            const currentArea = {
+                curentCountry: currentLocation.Country.LocalizedName,
+                currentCity: currentLocation.LocalizedName
+            };
+            const response = await fetch(`https://dataservice.accuweather.com/currentconditions/v1/${Key}?apikey=${apiKey}&language=${localLang}&details=true`)
+            const data = await response.json();
+            const currentData = {
+                ...currentArea,
+                ...data[0]
+            }
+            resolve(currentData);
         }
-        resolve(currentData);
+        catch (error) {
+            console.log(error); 
+        }
     })
 }
 

@@ -238,6 +238,7 @@ body {
   justify-content: center;
   align-items: center;
   background: #000;
+  text-align: center;
 }
 
 .message span {

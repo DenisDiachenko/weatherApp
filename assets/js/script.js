@@ -4,10 +4,10 @@
 //const apiKey = `cyYr3Sjnlgx3TaMpYDca8ZXB8wqd8QJF`;
 
 // sarmat
-const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
+//const apiKey = `0miOqEUeJnV7om3LvxsFghUDAl1jEoB8`;
 
 //valeri
-//const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
+const apiKey = 'Ccv0QyzRGzSyyuWAbbKLBG5RlW86E2G6'
 
 //valeri
 //const apiKey = 'A96DKjyFWxJFmhhBYrfVOrl0xrdp6sDD';

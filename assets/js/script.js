@@ -125,14 +125,17 @@ const setupBackgroundWrapperElement = (backgroundWrapperElement) => {
     hideSpinner();
 }
 
-const addEventListenersForElements = (switchButtons, sliderNavElement, twelveHoursForecastElement, backgroundWrapperElement) => {
+const addEventListenersForElements = (
+    switchButtons, sliderNavElement, twelveHoursForecastElement, backgroundWrapperElement) => {
 
     addEventListenerForButtons(switchButtons, sliderNavElement);
 
-    twelveHoursForecastElement.addEventListener('click', event => {
-        twelveHoursForecastElement.classList.toggle('open');
-        backgroundWrapperElement.classList.toggle('visibility')
-    })
+    addEventListenerForTwelveHoursForecastElement(twelveHoursForecastElement, backgroundWrapperElement);
+
+    // twelveHoursForecastElement.addEventListener('click', event => {
+    //     twelveHoursForecastElement.classList.toggle('open');
+    //     backgroundWrapperElement.classList.toggle('visibility')
+    // })
 }
 
 const addEventListenerForButtons = (switchButtons, sliderNavElement) => {
@@ -152,6 +155,25 @@ const addEventListenerForButtons = (switchButtons, sliderNavElement) => {
             }
         })
     }
+}
+
+const addEventListenerForTwelveHoursForecastElement = (twelveHoursForecastElement, backgroundWrapperElement) => {
+    let touchStartY = 0;
+    let touchEndY = 0;
+    twelveHoursForecastElement.addEventListener('touchstart', event => {
+        touchStartY = event.changedTouches[0].screenY;
+    }, false)
+    twelveHoursForecastElement.addEventListener('touchend', event => {
+        touchEndY = event.changedTouches[0].screenY;
+        if (touchStartY < touchEndY) {
+            backgroundWrapperElement.classList.remove('visibility');
+            twelveHoursForecastElement.classList.remove('open');
+        }
+        else {
+            backgroundWrapperElement.classList.add('visibility');
+            twelveHoursForecastElement.classList.add('open');
+        }
+    }, false)
 }
 
 const returnTermometerIcon = (time) =>
